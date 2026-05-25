@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shine on Stage - Ticket Booking Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;500;600;700;900&display=swap" rel="stylesheet">
     
     <style>
         /* ==========================================
@@ -502,6 +502,20 @@
             }
         };
 
+        // Live Box Office Oriented Hype Array Matrix
+        const HYPE_MESSAGES = [
+            "CRACKING OPEN THE BOX OFFICE HUB...",
+            "POLISHING THE PROSCENIUM ARCH LIGHTING...",
+            "SECURING FRONT-ROW VIEWING GRIDS...",
+            "PREPARING COVENTRY & ALBANY FLOORPLANS...",
+            "TUNING THE STAGE TRACKING TELEMETRY...",
+            "WARMING UP THE RED CARPET PROTOCOLS...",
+            "MAPPING AUDITORIUM COORDINATES...",
+            "FINALIZING BALCONY SEATING MATRICES...",
+            "UNLEASHING THE LIVE CHEERING SECTIONS...",
+            "PREPARING THE STANDING OVATION ENGINE..."
+        ];
+
         let selectedActiveShowId = null;
         let syncedSheetDataset = {};
         let backgroundRefreshTimer = null;
@@ -512,39 +526,62 @@
             document.getElementById('backButton').addEventListener('click', routeBackToHubView);
         });
 
+        // 1:1 Restored Asynchronous Framework Runtime Loader Logic Loop
         function initializeLoaderSequence() {
-            const percentages = [0, 24, 58, 81, 100];
-            const updates = [
-                "Initializing secure runtime components...",
-                "Loading data visualization profiles...",
-                "Mapping data grids...",
-                "Syncing database configurations...",
-                "System Online"
-            ];
-            
-            let phase = 0;
+            let currentPct = 0;
             const pctElement = document.getElementById('loadPct');
             const barElement = document.getElementById('loadBar');
             const statusElement = document.getElementById('loadStatus');
+            const hypeElement = document.getElementById('loadHype');
             const screenElement = document.getElementById('loadingScreen');
 
-            function cycleLoader() {
-                if (phase < percentages.length) {
-                    pctElement.textContent = percentages[phase] + "%";
-                    barElement.style.width = percentages[phase] + "%";
-                    statusElement.textContent = updates[phase];
-                    
-                    let delay = phase === 0 ? 150 : (phase === 2 ? 300 : 200);
-                    phase++;
-                    setTimeout(cycleLoader, delay);
+            // Pick a random box office hype string to initialize the row layout cleanly
+            hypeElement.textContent = HYPE_MESSAGES[Math.floor(Math.random() * HYPE_MESSAGES.length)];
+
+            function step() {
+                // Micro-step increments mimic framework processing stalls perfectly
+                let increment = Math.floor(Math.random() * 6) + 2; 
+                currentPct += increment;
+                
+                if (currentPct > 100) currentPct = 100;
+
+                pctElement.textContent = currentPct + "%";
+                barElement.style.width = currentPct + "%";
+
+                // Pacing text changes based on technical progress curves
+                if (currentPct < 25) {
+                    statusElement.textContent = "Connecting to remote database ledger...";
+                } else if (currentPct < 55) {
+                    statusElement.textContent = "Compiling live allocation balances...";
+                } else if (currentPct < 85) {
+                    statusElement.textContent = "Formatting ticket routing conduits...";
                 } else {
-                    screenElement.classList.add('fade-out');
+                    statusElement.textContent = "System Ready. Initializing interface ecosystem.";
+                }
+
+                // Randomly rotate hype phrases on major processing checkpoints
+                if (currentPct % 23 === 0 || currentPct === 50 || currentPct === 77) {
+                    hypeElement.textContent = HYPE_MESSAGES[Math.floor(Math.random() * HYPE_MESSAGES.length)];
+                }
+
+                if (currentPct < 100) {
+                    // Random frame timing keeps the load animation feeling slick, organic, and ultra-premium
+                    let frameSpeed = Math.floor(Math.random() * 60) + 15;
+                    if (currentPct > 40 && currentPct < 55) frameSpeed += 40; // Simulated data-burst delay
+                    if (currentPct > 80 && currentPct < 90) frameSpeed += 25; // Simulated processing delay
+                    setTimeout(step, frameSpeed);
+                } else {
+                    // Clean completion hand-off
                     setTimeout(() => {
-                        screenElement.classList.add('hidden');
-                    }, 400);
+                        screenElement.classList.add('fade-out');
+                        setTimeout(() => {
+                            screenElement.classList.add('hidden');
+                        }, 400);
+                    }, 350);
                 }
             }
-            cycleLoader();
+            // Trigger loop execution immediately upon thread opening
+            setTimeout(step, 100);
         }
 
         function renderCentralProductionHub() {
