@@ -150,7 +150,7 @@
         }
 
         /* ==========================================
-           🚨 PULSING RED GLOW KEYFRAME ANIMATION
+           🚨 PULSING RED GLOW FOR LOW TURNOUT
            ========================================== */
         @keyframes pulseRedGlow {
             0% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.2); border-color: rgba(224, 85, 85, 0.25); }
@@ -312,12 +312,12 @@
             color: var(--text);
         }
 
-        /* Tier Styling Variants */
+        /* Status Colors */
         .tier-critical .tier-title { color: var(--red); }
         .tier-warning .tier-title { color: var(--accent); }
         .tier-optimal .tier-title { color: var(--green); }
 
-        /* Normal Borders vs. Glowing Red Warning Card */
+        /* Card Borders */
         .tier-critical-card { animation: pulseRedGlow 2.5s infinite ease-in-out; }
         .tier-warning-card  { border-color: rgba(240, 165, 0, 0.25); }
         .tier-optimal-card  { border-color: rgba(62, 207, 142, 0.25); }
@@ -416,8 +416,9 @@
             });
         }
 
+        // Clean link interception to play the loading sequence before navigating
         function handleCardClick(url, event) {
-            event.preventDefault();
+            event.preventDefault(); 
             simulateLoading("jotformRedirect", url, null);
         }
 
@@ -437,11 +438,9 @@
             pct.textContent = "0%";
 
             let p = 0;
-            // Setup precise interval speeds depending on context mode
             let intervalSpeed = (type === "initial") ? 30 : 12;
 
             let timer = setInterval(() => {
-                // Production steps matching loop calculations
                 p += (type === "initial") ? Math.floor(Math.random() * 5) + 2 : Math.floor(Math.random() * 15) + 8;
                 
                 if (p >= 100) {
@@ -476,7 +475,6 @@
                     bar.style.width = p + "%";
                     pct.textContent = p + "%";
 
-                    // Apply context texts dynamically mapping across percentage intervals
                     if (type === "initial") {
                         if (p < 25) {
                             hype.textContent = "LOADING BOX OFFICE...";
@@ -517,7 +515,7 @@
                 let tierClass = "";
                 let statusLabel = "";
 
-                // Precise Simple Turnout Threshold Criteria (Option 3)
+                // Option 3 Turnout Criteria Labels
                 if (ratio < 1.0) {
                     tierClass = "tier-critical";
                     statusLabel = "Low Turnout";
