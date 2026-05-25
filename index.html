@@ -16,16 +16,9 @@
             --border-2: #262730;
 
             --accent: #F0A500;
-            --accent-bg: rgba(240, 165, 0, 0.13);
-            --accent-bdr: rgba(240, 165, 0, 0.35);
-            
             --red: #E05555;
-            --red-bg: rgba(224, 85, 85, 0.13);
-            --red-bdr: rgba(224, 85, 85, 0.40);
-            
             --green: #3ECF8E;
-            --green-bg: rgba(62, 207, 142, 0.13);
-            --green-bdr: rgba(62, 207, 142, 0.40);
+            --muted: #555555;
 
             --text: #FFFFFF;
             --text-2: #E0E0E0;
@@ -53,7 +46,7 @@
         }
 
         /* ==========================================
-           ⏳ LOADING SCREEN (Aesthetic Match to index-14.html)
+           ⏳ LOADING SCREEN
            ========================================== */
         #loadingScreen {
             position: fixed;
@@ -88,7 +81,6 @@
             transform: translate(-50%, -50%);
             filter: blur(45px);
             animation: glowPulse 3s infinite ease-in-out;
-            z-index: 0;
         }
         .ls-logo-area img {
             width: 140px; height: 140px;
@@ -116,7 +108,7 @@
         }
         .ls-pct {
             font-size: 2.8rem;
-            font-weight: 900; /* Forces correct fallback asset rendering weights */
+            font-weight: 900;
             color: #fff;
             font-variant-numeric: tabular-nums;
             margin-bottom: 10px;
@@ -144,26 +136,19 @@
         }
 
         /* ==========================================
-           🚨 ANIMATIONS & KEYFRAMES
+           🚨 ANIMATIONS
            ========================================== */
         @keyframes glowPulse {
-            0% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
+            0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
             50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.4); }
-            100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
-        }
-        @keyframes pulseRedCardGlow {
-            0% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.15); border-color: rgba(224, 85, 85, 0.2); }
-            50% { box-shadow: 0 0 14px rgba(224, 85, 85, 0.45); border-color: rgba(224, 85, 85, 0.55); }
-            100% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.15); border-color: rgba(224, 85, 85, 0.2); }
         }
         @keyframes pulseDotGlow {
-            0% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 0 0 rgba(224, 85, 85, 0.7); }
-            70% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 0 6px rgba(224, 85, 85, 0); }
-            100% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 0 0 rgba(224, 85, 85, 0); }
+            0%, 100% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 0 0 rgba(224, 85, 85, 0.7); }
+            70% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 0 8px rgba(224, 85, 85, 0); }
         }
 
         /* ==========================================
-           📱 PORTAL UI WORKSPACE
+           📱 PORTAL UI MAIN LAYOUT
            ========================================== */
         .portal-header {
             padding: 24px 16px;
@@ -176,7 +161,6 @@
             width: 64px;
             height: 64px;
             margin: 0 auto 12px;
-            position: relative;
         }
 
         .portal-logo-container img {
@@ -188,7 +172,6 @@
         .portal-headline {
             font-size: 24px;
             font-weight: 700;
-            color: var(--text);
             letter-spacing: -0.02em;
             margin-bottom: 4px;
         }
@@ -229,7 +212,7 @@
         }
 
         /* ==========================================
-           🏆 LEADERBOARD MATRIX LAYOUT
+           🏆 CARD MATRIX LAYOUT
            ========================================== */
         .leaderboard-section-title {
             font-size: 12px;
@@ -262,7 +245,7 @@
             justify-content: space-between;
             align-items: center;
             text-decoration: none;
-            transition: transform 0.15s ease, border-color 0.15s ease;
+            transition: transform 0.15s ease, background-color 0.15s ease;
         }
 
         .portal-card:active {
@@ -285,15 +268,33 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
-        /* 🔴 STATE INDICATOR ELEMENTS */
+        .card-sub-label {
+            font-size: 13px;
+            color: var(--text-3);
+        }
+
+        /* 📊 RIGHT ALIGNED METRIC BLOCK */
+        .card-metric-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            padding-left: 12px;
+            flex-shrink: 0;
+        }
+
+        .tier-status-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Larger High-Fidelity Glow Icons */
         .turnout-status-icon {
-            width: 9px;
-            height: 9px;
+            width: 12px;
+            height: 12px;
             border-radius: 50%;
             display: inline-block;
             flex-shrink: 0;
@@ -301,22 +302,10 @@
         .icon-critical { background: var(--red); animation: pulseDotGlow 1.8s infinite ease-in-out; }
         .icon-warning  { background: var(--accent); }
         .icon-optimal  { background: var(--green); }
-
-        .card-sub-label {
-            font-size: 13px;
-            color: var(--text-3);
-        }
-
-        .card-metric-right {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 2px;
-            padding-left: 12px;
-        }
+        .icon-pending  { background: var(--muted); }
 
         .tier-title {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -334,36 +323,26 @@
             color: var(--text);
         }
 
-        /* Core Theme Variable Mappings */
+        /* Dynamic Theme Text Colors */
         .tier-critical .tier-title { color: var(--red); }
         .tier-warning .tier-title { color: var(--accent); }
         .tier-optimal .tier-title { color: var(--green); }
-
-        /* Structural Outline & Card Glow CSS Rules */
-        .tier-critical-card { animation: pulseRedCardGlow 2.5s infinite ease-in-out; }
-        .tier-warning-card  { border-color: rgba(240, 165, 0, 0.25); }
-        .tier-optimal-card  { border-color: rgba(62, 207, 142, 0.25); }
+        .tier-pending .tier-title { color: var(--text-3); }
     </style>
 </head>
 <body>
 
     <div id="loadingScreen">
-        <div class="ls-logo-area">
-            <img src="logo.png" alt="Logo">
-        </div>
+        <div class="ls-logo-area"><img src="logo.png" alt="Logo"></div>
         <div class="ls-title">Shine on Stage</div>
         <div class="ls-hype" id="lsHype">LOADING BOX OFFICE...</div>
         <div class="ls-pct" id="lsPct">0%</div>
-        <div class="ls-bar-bg">
-            <div class="ls-bar-fill" id="lsBar"></div>
-        </div>
+        <div class="ls-bar-bg"><div class="ls-bar-fill" id="lsBar"></div></div>
         <div class="ls-status" id="lsStatus">Checking box office manifests...</div>
     </div>
 
     <header class="portal-header">
-        <div class="portal-logo-container">
-            <img src="logo.png" alt="Logo">
-        </div>
+        <div class="portal-logo-container"><img src="logo.png" alt="Logo"></div>
         <h1 class="portal-headline">Ticket Booking Portal</h1>
         <p class="portal-sub-headline">Choose your show to see how your school is doing:</p>
     </header>
@@ -379,16 +358,20 @@
 
     <script>
         const PORTAL_CONFIG = {
-            // Absolute Destination Path Structure with Secure Protocol
+            // Note: Replace with your actual live target form token if needed
             jotformBaseUrl: "https://form.jotform.com/261234567890",
+            
+            // Baseline Minimum Ticket volume before an evaluation ranking triggers
+            minSalesThreshold: 10,
+
             showsDataManifest: [
                 {
                     id: "show-001",
                     name: "Friday Night Live Showcase — 10th July 2026",
                     schools: {
-                        "Stardance Academy": 8,
-                        "Elite Moves": 22,
-                        "Grace School of Dance": 35
+                        "Stardance Academy": 3,   // Under threshold -> Pending
+                        "Elite Moves": 22,        // Evaluation active
+                        "Grace School of Dance": 35 // Evaluation active
                     }
                 },
                 {
@@ -396,7 +379,7 @@
                     name: "Saturday Matinee Spectacular — 11th July 2026",
                     schools: {
                         "Stardance Academy": 25,
-                        "Velocity Dance": 14,
+                        "Velocity Dance": 4,      // Under threshold -> Pending
                         "Aspire Stage School": 19
                     }
                 },
@@ -404,7 +387,7 @@
                     id: "show-003",
                     name: "Sunday Grand Finale — 12th July 2026",
                     schools: {
-                        "Elite Moves": 20,
+                        "Elite Moves": 5,         // Under threshold -> Pending
                         "Velocity Dance": 18,
                         "Aspire Stage School": 40
                     }
@@ -439,16 +422,13 @@
             });
         }
 
-        // Handles secure intermediate travel tracking to target registration pages
+        // 🔗 Fixed Routing Handler: Passes target data parameters safely forward
         function routeToBooking(targetUrl) {
-            simulateLoading("jotformRedirect", null, () => {
-                window.location.href = targetUrl;
-            });
+            simulateLoading("jotformRedirect", targetUrl, null);
         }
 
         /**
-         * ⏳ HIGH-FIDELITY SEGMENTED PROGRESS ANIMATION LOGIC
-         * Maps processing execution speeds based on operation state variables
+         * ⏳ VARIABLE LOADING ENGINE
          */
         function simulateLoading(type, absoluteUrl, completedCallback) {
             const screen = document.getElementById("loadingScreen");
@@ -462,7 +442,6 @@
             pct.textContent = "0%";
 
             let p = 0;
-            // Option 3 Variable Speed Settings: Slow Initial Run (30ms), Rapid Action Changes (12ms)
             let intervalSpeed = (type === "initial") ? 30 : 12;
 
             let timer = setInterval(() => {
@@ -489,7 +468,12 @@
                         screen.classList.add("fade-out");
                         setTimeout(() => {
                             screen.classList.add("hidden");
+                            
+                            // Execute callback loops cleanly without shifting contexts
                             if (completedCallback) completedCallback();
+                            if (type === "jotformRedirect" && absoluteUrl) {
+                                window.location.href = absoluteUrl;
+                            }
                         }, 400);
                     }, 200);
                 } else {
@@ -536,9 +520,15 @@
                 let tierClass = "";
                 let iconClass = "";
                 let statusLabel = "";
+                let displayRatio = ratio.toFixed(1);
 
-                // Condition-Driven Styling Metric Matrix (Option 3 Requirements)
-                if (ratio < 1.0) {
+                // 📊 Step 1 Variable Assessment Threshold Logic
+                if (sold < PORTAL_CONFIG.minSalesThreshold) {
+                    tierClass = "tier-pending";
+                    iconClass = "icon-pending";
+                    statusLabel = "Pending Data";
+                    displayRatio = "—";
+                } else if (ratio < 1.0) {
                     tierClass = "tier-critical";
                     iconClass = "icon-critical";
                     statusLabel = "Low Turnout";
@@ -554,27 +544,34 @@
 
                 return {
                     name: schoolName,
-                    ratio: ratio.toFixed(1),
+                    sold: sold,
+                    ratio: displayRatio,
                     tierClass: tierClass,
                     iconClass: iconClass,
                     statusText: statusLabel
                 };
-            }).sort((a, b) => a.name.localeCompare(b.name)); // Stable Non-mutating Alphanumeric Sort
+            }).sort((a, b) => a.name.localeCompare(b.name));
 
-            // Component Interface Output Mapping
+            // Component Interface Renderer
             container.innerHTML = cardsData.map(item => {
                 const queryDestinationUrl = `${PORTAL_CONFIG.jotformBaseUrl}?show=${encodeURIComponent(selectedShowId)}&school=${encodeURIComponent(item.name)}`;
+                
+                // Secondary baseline string substitution
+                const sublabelText = (item.statusText === "Pending Data") 
+                    ? `Not enough sales yet to accurately evaluate turnout`
+                    : `Click to begin buying tickets →`;
+
                 return `
-                    <a href="javascript:void(0);" onclick="routeToBooking('${queryDestinationUrl}')" class="portal-card ${item.tierClass}-card">
+                    <a href="javascript:void(0);" onclick="routeToBooking('${queryDestinationUrl}')" class="portal-card">
                         <div class="card-meta-left">
-                            <div class="card-main-title">
-                                <span class="turnout-status-icon ${item.iconClass}"></span>
-                                ${item.name}
-                            </div>
-                            <div class="card-sub-label">Click to begin buying tickets →</div>
+                            <div class="card-main-title">${item.name}</div>
+                            <div class="card-sub-label">${sublabelText}</div>
                         </div>
                         <div class="card-metric-right ${item.tierClass}">
-                            <div class="tier-title">${item.statusText}</div>
+                            <div class="tier-status-wrapper">
+                                🎫 <span class="turnout-status-icon ${item.iconClass}"></span>
+                                <div class="tier-title">${item.statusText}</div>
+                            </div>
                             <div class="tier-value"><span>${item.ratio}</span> Seats / Dancer</div>
                         </div>
                     </a>
