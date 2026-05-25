@@ -1,21 +1,20 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shine on Stage - Ticket Booking Portal</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
-        /* ==========================================
-           🎨 BRANDING & THEME
-           ========================================== */
         :root {
             --bg: #09090C;
             --surface: #111217;
             --surface-2: #16171D;
             --border: #1E2029;
             --border-2: #262730;
-            
+
             --accent: #F0A500;
             --accent-bg: rgba(240, 165, 0, 0.13);
             --accent-bdr: rgba(240, 165, 0, 0.35);
@@ -27,10 +26,11 @@
             --green: #3ECF8E;
             --green-bg: rgba(62, 207, 142, 0.13);
             --green-bdr: rgba(62, 207, 142, 0.40);
-            
+
             --text: #FFFFFF;
             --text-2: #E0E0E0;
             --text-3: #888888;
+
             --font: 'Poppins', sans-serif;
             --radius: 16px;
         }
@@ -116,7 +116,7 @@
         }
         .ls-pct {
             font-size: 2.8rem;
-            font-weight: 900; /* Triggers explicit fallback weight rendering */
+            font-weight: 900; /* Forces correct fallback asset rendering weights */
             color: #fff;
             font-variant-numeric: tabular-nums;
             margin-bottom: 10px;
@@ -142,15 +142,15 @@
             text-align: center;
             padding: 0 20px;
         }
+
+        /* ==========================================
+           🚨 ANIMATIONS & KEYFRAMES
+           ========================================== */
         @keyframes glowPulse {
             0% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
             50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.4); }
             100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
         }
-
-        /* ==========================================
-           🚨 ANIMATIONS & EFFECTS
-           ========================================== */
         @keyframes pulseRedCardGlow {
             0% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.15); border-color: rgba(224, 85, 85, 0.2); }
             50% { box-shadow: 0 0 14px rgba(224, 85, 85, 0.45); border-color: rgba(224, 85, 85, 0.55); }
@@ -228,6 +228,9 @@
             -webkit-appearance: none;
         }
 
+        /* ==========================================
+           🏆 LEADERBOARD MATRIX LAYOUT
+           ========================================== */
         .leaderboard-section-title {
             font-size: 12px;
             font-weight: 700;
@@ -287,7 +290,7 @@
             gap: 10px;
         }
 
-        /* 🔴 STATE INDICATOR CSS ASSIGNMENTS */
+        /* 🔴 STATE INDICATOR ELEMENTS */
         .turnout-status-icon {
             width: 9px;
             height: 9px;
@@ -331,16 +334,18 @@
             color: var(--text);
         }
 
-        /* Theme Color Implementations */
+        /* Core Theme Variable Mappings */
         .tier-critical .tier-title { color: var(--red); }
         .tier-warning .tier-title { color: var(--accent); }
         .tier-optimal .tier-title { color: var(--green); }
 
-        /* Structural Outline Classes */
+        /* Structural Outline & Card Glow CSS Rules */
         .tier-critical-card { animation: pulseRedCardGlow 2.5s infinite ease-in-out; }
         .tier-warning-card  { border-color: rgba(240, 165, 0, 0.25); }
         .tier-optimal-card  { border-color: rgba(62, 207, 142, 0.25); }
-    </style></head><body>
+    </style>
+</head>
+<body>
 
     <div id="loadingScreen">
         <div class="ls-logo-area">
@@ -374,7 +379,7 @@
 
     <script>
         const PORTAL_CONFIG = {
-            // Secure Protocol and Absolute Destination Path Structure
+            // Absolute Destination Path Structure with Secure Protocol
             jotformBaseUrl: "https://form.jotform.com/261234567890",
             showsDataManifest: [
                 {
@@ -434,7 +439,7 @@
             });
         }
 
-        // Handles secure transition to external registration pages
+        // Handles secure intermediate travel tracking to target registration pages
         function routeToBooking(targetUrl) {
             simulateLoading("jotformRedirect", null, () => {
                 window.location.href = targetUrl;
@@ -442,8 +447,8 @@
         }
 
         /**
-         * ⏳ SIMULATE LOADING ENGINE
-         * High-fidelity processing loop mapping with variable performance ticks
+         * ⏳ HIGH-FIDELITY SEGMENTED PROGRESS ANIMATION LOGIC
+         * Maps processing execution speeds based on operation state variables
          */
         function simulateLoading(type, absoluteUrl, completedCallback) {
             const screen = document.getElementById("loadingScreen");
@@ -457,6 +462,7 @@
             pct.textContent = "0%";
 
             let p = 0;
+            // Option 3 Variable Speed Settings: Slow Initial Run (30ms), Rapid Action Changes (12ms)
             let intervalSpeed = (type === "initial") ? 30 : 12;
 
             let timer = setInterval(() => {
@@ -522,7 +528,6 @@
 
             if (!showData) return;
 
-            // Non-mutating evaluation mapping via cloned schema layout logic
             const cardsData = Object.keys(showData.schools).map(schoolName => {
                 const sold = showData.schools[schoolName];
                 const dancers = PORTAL_CONFIG.dancersDemographicsRoster[schoolName] || 1;
@@ -532,7 +537,7 @@
                 let iconClass = "";
                 let statusLabel = "";
 
-                // Threshold Condition Evaluation Matrix (Option 3 Implementation)
+                // Condition-Driven Styling Metric Matrix (Option 3 Requirements)
                 if (ratio < 1.0) {
                     tierClass = "tier-critical";
                     iconClass = "icon-critical";
@@ -554,9 +559,9 @@
                     iconClass: iconClass,
                     statusText: statusLabel
                 };
-            }).sort((a, b) => a.name.localeCompare(b.name)); // Clean alphanumeric structural sort
+            }).sort((a, b) => a.name.localeCompare(b.name)); // Stable Non-mutating Alphanumeric Sort
 
-            // Component Interface Output with preserved state indicator elements
+            // Component Interface Output Mapping
             container.innerHTML = cardsData.map(item => {
                 const queryDestinationUrl = `${PORTAL_CONFIG.jotformBaseUrl}?show=${encodeURIComponent(selectedShowId)}&school=${encodeURIComponent(item.name)}`;
                 return `
@@ -576,4 +581,6 @@
                 `;
             }).join('');
         }
-    </script></body></html>
+    </script>
+</body>
+</html>
