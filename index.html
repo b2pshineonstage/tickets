@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shine on Stage - Ticket Booking Portal</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -54,11 +55,11 @@
         }
 
         /* ==========================================
-           ⏳ LOADING SCREEN (Matched to exact index-14.html styles)
+           ⏳ LOADING SCREEN (Matched to exact index-14.html layout)
            ========================================== */
         #loadingScreen {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            inset: 0;
             background: #000;
             z-index: 9999;
             display: flex;
@@ -99,7 +100,7 @@
         }
         .ls-title {
             font-size: 1.1rem;
-            font-weight: 700;
+            font-weight: 900;
             letter-spacing: 5px;
             color: #F0A500;
             text-transform: uppercase;
@@ -115,9 +116,11 @@
             margin-bottom: 10px;
             text-align: center;
         }
+        
+        /* Set to font-weight: 900 to trigger browser fallback rule to Bold 700 */
         .ls-pct {
             font-size: 2.8rem;
-            font-weight: 700;
+            font-weight: 900;
             color: #fff;
             font-variant-numeric: tabular-nums;
             margin-bottom: 10px;
@@ -150,21 +153,21 @@
         }
 
         /* ==========================================
-           🚨 PULSING RED GLOW KEYFRAMES (Icon and Cards)
+           🚨 PULSING RADIAL GLOW ANIMATIONS
            ========================================== */
-        @keyframes pulseRedGlow {
-            0% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.2); border-color: rgba(224, 85, 85, 0.25); }
-            50% { box-shadow: 0 0 14px rgba(224, 85, 85, 0.50); border-color: rgba(224, 85, 85, 0.60); }
-            100% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.2); border-color: rgba(224, 85, 85, 0.25); }
+        @keyframes pulseRedCardGlow {
+            0% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.15); border-color: rgba(224, 85, 85, 0.2); }
+            50% { box-shadow: 0 0 14px rgba(224, 85, 85, 0.45); border-color: rgba(224, 85, 85, 0.55); }
+            100% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.15); border-color: rgba(224, 85, 85, 0.2); }
         }
         @keyframes pulseDotGlow {
             0% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 0 0 rgba(224, 85, 85, 0.7); }
-            70% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 8px rgba(224, 85, 85, 0); }
+            70% { transform: scale(1.15); opacity: 1; box-shadow: 0 0 0 6px rgba(224, 85, 85, 0); }
             100% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 0 0 rgba(224, 85, 85, 0); }
         }
 
         /* ==========================================
-           📱 PORTAL INTERFACE COMPONENTS
+           📱 PORTAL UI WORKSPACE
            ========================================== */
         .portal-header {
             padding: 24px 16px;
@@ -285,13 +288,13 @@
             text-overflow: ellipsis;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        /* 🔴 GLOWING STATUS ICON INNER ASSIGNMENTS */
+        /* 2) 🔴 TURNOUT STATUS INDICATOR DOT STYLING */
         .turnout-status-icon {
-            width: 8px;
-            height: 8px;
+            width: 9px;
+            height: 9px;
             border-radius: 50%;
             display: inline-block;
             flex-shrink: 0;
@@ -332,13 +335,13 @@
             color: var(--text);
         }
 
-        /* Support Color Targets */
+        /* Support Color Hierarchies */
         .tier-critical .tier-title { color: var(--red); }
         .tier-warning .tier-title { color: var(--accent); }
         .tier-optimal .tier-title { color: var(--green); }
 
-        /* Card Container Targets */
-        .tier-critical-card { animation: pulseRedGlow 2.5s infinite ease-in-out; }
+        /* Conditional Border Target Assignments */
+        .tier-critical-card { animation: pulseRedCardGlow 2.5s infinite ease-in-out; }
         .tier-warning-card  { border-color: rgba(240, 165, 0, 0.25); }
         .tier-optimal-card  { border-color: rgba(62, 207, 142, 0.25); }
     </style>
@@ -377,7 +380,8 @@
 
     <script>
         const PORTAL_CONFIG = {
-            jotformBaseUrl: "form.jotform.com/261234567890",
+            // 3) Update to absolute URL layout destination path format
+            jotformBaseUrl: "https://form.jotform.com/261234567890",
             showsDataManifest: [
                 {
                     id: "show-001",
@@ -436,9 +440,10 @@
             });
         }
 
-        function navigateToJotform(url) {
+        // 3) Controlled JotForm compilation router redirect function
+        function routeToBooking(targetUrl) {
             simulateLoading("jotformRedirect", null, () => {
-                window.location.href = url;
+                window.location.href = targetUrl;
             });
         }
 
@@ -554,10 +559,11 @@
                 };
             }).sort((a, b) => a.name.localeCompare(b.name));
 
+            // 2) Fixed string literal constructor markup output here
             container.innerHTML = cardsData.map(item => {
-                const url = `https://${PORTAL_CONFIG.jotformBaseUrl}?show=${encodeURIComponent(selectedShowId)}&school=${encodeURIComponent(item.name)}`;
+                const queryDestinationUrl = `${PORTAL_CONFIG.jotformBaseUrl}?show=${encodeURIComponent(selectedShowId)}&school=${encodeURIComponent(item.name)}`;
                 return `
-                    <a href="javascript:void(0);" onclick="navigateToJotform('${url}')" class="portal-card ${item.tierClass}-card">
+                    <a href="javascript:void(0);" onclick="routeToBooking('${queryDestinationUrl}')" class="portal-card ${item.tierClass}-card">
                         <div class="card-meta-left">
                             <div class="card-main-title">
                                 <span class="turnout-status-icon ${item.iconClass}"></span>
