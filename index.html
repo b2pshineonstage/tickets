@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<!DOCTYPE html><html lang="en"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shine on Stage - Ticket Booking Portal</title>
@@ -55,7 +53,7 @@
         }
 
         /* ==========================================
-           ⏳ LOADING SCREEN (Matched to exact index-14.html layout)
+           ⏳ LOADING SCREEN (Aesthetic Match to index-14.html)
            ========================================== */
         #loadingScreen {
             position: fixed;
@@ -116,11 +114,9 @@
             margin-bottom: 10px;
             text-align: center;
         }
-        
-        /* Set to font-weight: 900 to trigger browser fallback rule to Bold 700 */
         .ls-pct {
             font-size: 2.8rem;
-            font-weight: 900;
+            font-weight: 900; /* Triggers explicit fallback weight rendering */
             color: #fff;
             font-variant-numeric: tabular-nums;
             margin-bottom: 10px;
@@ -153,7 +149,7 @@
         }
 
         /* ==========================================
-           🚨 PULSING RADIAL GLOW ANIMATIONS
+           🚨 ANIMATIONS & EFFECTS
            ========================================== */
         @keyframes pulseRedCardGlow {
             0% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.15); border-color: rgba(224, 85, 85, 0.2); }
@@ -291,7 +287,7 @@
             gap: 10px;
         }
 
-        /* 2) 🔴 TURNOUT STATUS INDICATOR DOT STYLING */
+        /* 🔴 STATE INDICATOR CSS ASSIGNMENTS */
         .turnout-status-icon {
             width: 9px;
             height: 9px;
@@ -335,18 +331,16 @@
             color: var(--text);
         }
 
-        /* Support Color Hierarchies */
+        /* Theme Color Implementations */
         .tier-critical .tier-title { color: var(--red); }
         .tier-warning .tier-title { color: var(--accent); }
         .tier-optimal .tier-title { color: var(--green); }
 
-        /* Conditional Border Target Assignments */
+        /* Structural Outline Classes */
         .tier-critical-card { animation: pulseRedCardGlow 2.5s infinite ease-in-out; }
         .tier-warning-card  { border-color: rgba(240, 165, 0, 0.25); }
         .tier-optimal-card  { border-color: rgba(62, 207, 142, 0.25); }
-    </style>
-</head>
-<body>
+    </style></head><body>
 
     <div id="loadingScreen">
         <div class="ls-logo-area">
@@ -380,7 +374,7 @@
 
     <script>
         const PORTAL_CONFIG = {
-            // 3) Update to absolute URL layout destination path format
+            // Secure Protocol and Absolute Destination Path Structure
             jotformBaseUrl: "https://form.jotform.com/261234567890",
             showsDataManifest: [
                 {
@@ -440,7 +434,7 @@
             });
         }
 
-        // 3) Controlled JotForm compilation router redirect function
+        // Handles secure transition to external registration pages
         function routeToBooking(targetUrl) {
             simulateLoading("jotformRedirect", null, () => {
                 window.location.href = targetUrl;
@@ -449,6 +443,7 @@
 
         /**
          * ⏳ SIMULATE LOADING ENGINE
+         * High-fidelity processing loop mapping with variable performance ticks
          */
         function simulateLoading(type, absoluteUrl, completedCallback) {
             const screen = document.getElementById("loadingScreen");
@@ -527,6 +522,7 @@
 
             if (!showData) return;
 
+            // Non-mutating evaluation mapping via cloned schema layout logic
             const cardsData = Object.keys(showData.schools).map(schoolName => {
                 const sold = showData.schools[schoolName];
                 const dancers = PORTAL_CONFIG.dancersDemographicsRoster[schoolName] || 1;
@@ -536,6 +532,7 @@
                 let iconClass = "";
                 let statusLabel = "";
 
+                // Threshold Condition Evaluation Matrix (Option 3 Implementation)
                 if (ratio < 1.0) {
                     tierClass = "tier-critical";
                     iconClass = "icon-critical";
@@ -557,9 +554,9 @@
                     iconClass: iconClass,
                     statusText: statusLabel
                 };
-            }).sort((a, b) => a.name.localeCompare(b.name));
+            }).sort((a, b) => a.name.localeCompare(b.name)); // Clean alphanumeric structural sort
 
-            // 2) Fixed string literal constructor markup output here
+            // Component Interface Output with preserved state indicator elements
             container.innerHTML = cardsData.map(item => {
                 const queryDestinationUrl = `${PORTAL_CONFIG.jotformBaseUrl}?show=${encodeURIComponent(selectedShowId)}&school=${encodeURIComponent(item.name)}`;
                 return `
@@ -579,6 +576,4 @@
                 `;
             }).join('');
         }
-    </script>
-</body>
-</html>
+    </script></body></html>
