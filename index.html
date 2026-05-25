@@ -29,17 +29,11 @@
             --green-bg: rgba(62, 207, 142, 0.13);
             --green-bdr: rgba(62, 207, 142, 0.40);
             
-            --amber: #F59E0B;
-            --amber-bg: rgba(245, 158, 11, 0.13);
-            --amber-bdr: rgba(245, 158, 11, 0.40);
-            
             --text: #FFFFFF;
             --text-2: #E0E0E0;
             --text-3: #888888;
-            
+            --font: 'Poppins', sans-serif;
             --radius: 16px;
-            --radius-sm: 12px;
-            --font: "Poppins", sans-serif;
         }
 
         * {
@@ -53,14 +47,14 @@
             background: var(--bg);
             color: var(--text);
             font-family: var(--font);
-            font-size: 17px;
-            line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
             overflow-x: hidden;
         }
 
         /* ==========================================
-           ✨ PREMIUM APP LOADING SCREEN (1:1 Clone)
+           ⏳ LOADING SCREEN (Identical to Sign In App)
            ========================================== */
         #loadingScreen {
             position: fixed;
@@ -73,23 +67,18 @@
             flex-direction: column;
             transition: opacity 0.4s;
         }
-
         #loadingScreen.fade-out {
             opacity: 0;
             pointer-events: none;
         }
-
         #loadingScreen.hidden {
             display: none;
         }
-
         .ls-logo-area {
             position: relative;
             display: inline-block;
             margin-bottom: 16px;
         }
-
-        /* Ambient Aura backlighting blur glow engine */
         .ls-logo-area::before {
             content: "";
             position: absolute;
@@ -104,26 +93,13 @@
             animation: glowPulse 3s infinite ease-in-out;
             z-index: 0;
         }
-
-        .ls-logo-area img, .ls-logo-area .fallback-star-logo {
+        .ls-logo-area img {
             width: 140px;
             height: 140px;
             position: relative;
             z-index: 1;
             object-fit: contain;
         }
-
-        /* Fallback Branding Star if the local logo image is not found */
-        .fallback-star-logo {
-            font-size: 72px;
-            color: var(--accent);
-            text-shadow: 0 0 25px rgba(240, 165, 0, 0.6);
-            display: flex !important;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-        }
-
         .ls-title {
             font-size: 1.1rem;
             font-weight: 900;
@@ -132,9 +108,7 @@
             text-transform: uppercase;
             margin: 8px 0 24px;
             font-family: var(--font);
-            text-align: center;
         }
-
         .ls-hype {
             font-size: 0.75rem;
             letter-spacing: 2px;
@@ -146,7 +120,6 @@
             margin-bottom: 10px;
             text-align: center;
         }
-
         .ls-pct {
             font-size: 2.8rem;
             font-weight: 900;
@@ -155,7 +128,6 @@
             font-variant-numeric: tabular-nums;
             margin-bottom: 10px;
         }
-
         .ls-bar-bg {
             width: 220px;
             height: 3px;
@@ -163,7 +135,6 @@
             border-radius: 10px;
             overflow: hidden;
         }
-
         .ls-bar-fill {
             height: 100%;
             background: #F0A500;
@@ -171,7 +142,6 @@
             width: 0%;
             transition: width 0.1s linear;
         }
-
         .ls-status {
             font-size: 12px;
             color: #555;
@@ -182,7 +152,6 @@
             text-align: center;
             padding: 0 20px;
         }
-
         @keyframes glowPulse {
             0% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
             50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.4); }
@@ -190,153 +159,108 @@
         }
 
         /* ==========================================
-           📦 LAYOUT ARCHITECTURE
+           📱 PORTAL INTERFACE COMPONENTS
            ========================================== */
-        .container {
-            max-width: 620px;
-            margin: 0 auto;
-            padding: 30px 16px 60px;
-            opacity: 0;
-            animation: fadeInPage 0.4s ease forwards;
-            animation-delay: 0.2s;
-        }
-
-        @keyframes fadeInPage {
-            to { opacity: 1; }
-        }
-
-        /* HEADER HERO OVERLAYS */
         .portal-header {
+            padding: 24px 16px;
             text-align: center;
-            margin-bottom: 35px;
-            padding-top: 15px;
+            background: linear-gradient(to bottom, rgba(17,18,23,0.8), transparent);
+            border-bottom: 1px solid var(--border);
         }
 
-        .header-brand-wrap {
-            display: inline-block;
+        .portal-logo-container {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 12px;
             position: relative;
-            width: 85px;
-            height: 85px;
-            margin-bottom: 16px;
         }
 
-        .header-brand-wrap::before {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 80px;
-            height: 80px;
-            background: var(--accent);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            filter: blur(20px);
-            animation: glowPulse 4s infinite ease-in-out;
-            opacity: 0.4;
-            z-index: 0;
-        }
-
-        .header-brand-wrap img {
+        .portal-logo-container img {
             width: 100%;
             height: 100%;
-            position: relative;
-            z-index: 1;
             object-fit: contain;
         }
 
-        .header-brand-wrap .fallback-star {
-            font-size: 48px;
-            color: var(--accent);
-            text-shadow: 0 0 15px rgba(240,165,0,0.5);
-            line-height: 85px;
-            text-align: center;
-        }
-
-        .show-info {
+        .portal-headline {
             font-size: 24px;
             font-weight: 700;
             color: var(--text);
-            line-height: 1.2;
+            letter-spacing: -0.02em;
             margin-bottom: 4px;
         }
 
-        .show-date {
-            font-size: 13px;
-            color: var(--text-3);
-            font-weight: 500;
-            letter-spacing: 0.02em;
-        }
-
-        .instruction-text {
-            text-align: center;
+        .portal-sub-headline {
             font-size: 14px;
             color: var(--text-3);
-            margin-bottom: 28px;
-            padding: 0 12px;
-            line-height: 1.6;
         }
 
-        /* NAVIGATION ELEMENTS */
-        .back-btn-container {
+        .show-selector-container {
+            padding: 16px;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .input-select-wrapper {
+            background: var(--surface);
+            border: 2px solid var(--border-2);
+            border-radius: var(--radius);
+            padding: 4px 12px;
             display: flex;
-            margin-bottom: 20px;
+            align-items: center;
         }
 
-        .back-portal-btn {
-            background: var(--surface-2);
-            border: 1px solid var(--border-2);
+        .input-select-wrapper select {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
             color: var(--text-2);
             font-family: var(--font);
-            font-size: 13px;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 12px 0;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.15s ease;
+            -webkit-appearance: none;
         }
 
-        .back-portal-btn:active {
-            transform: scale(0.97);
-            background: var(--border);
+        .leaderboard-section-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+            padding: 16px 16px 8px;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
         }
 
-        .view-section {
-            display: none;
-        }
-        .view-section.active {
-            display: block;
-        }
-
-        .list-grid {
+        .leaderboard-cards-wrapper {
+            padding: 0 16px 40px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
         }
 
-        /* ==========================================
-           🎴 CORE TRACKING CARDS
-           ========================================== */
         .portal-card {
             background: var(--surface);
             border: 2px solid var(--border-2);
             border-radius: var(--radius);
-            padding: 18px 20px;
-            cursor: pointer;
+            padding: 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             text-decoration: none;
-            color: var(--text);
-            gap: 14px;
-            transition: border-color 0.15s ease, background-color 0.15s ease;
+            transition: transform 0.15s ease, border-color 0.15s ease;
         }
 
         .portal-card:active {
+            transform: scale(0.98);
             background: var(--surface-2);
-            border-color: var(--border);
         }
 
         .card-meta-left {
@@ -351,352 +275,258 @@
             font-size: 17px;
             font-weight: 600;
             color: var(--text);
-            line-height: 1.3;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
         .card-sub-label {
-            font-size: 11px;
+            font-size: 13px;
             color: var(--text-3);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
         }
 
         .card-metric-right {
-            text-align: right;
-            padding: 10px 14px;
-            border-radius: var(--radius-sm);
-            min-width: 175px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            border: 1px solid transparent;
-            flex-shrink: 0;
+            align-items: flex-end;
+            gap: 2px;
+            padding-left: 12px;
         }
-
-        /* Dynamic Visual Status Allocation Tiers */
-        .tier-critical {
-            background-color: var(--red-bg);
-            border-color: var(--red-bdr);
-        }
-        .tier-critical .tier-title { color: var(--red); }
-
-        .tier-warning {
-            background-color: var(--amber-bg);
-            border-color: var(--amber-bdr);
-        }
-        .tier-warning .tier-title { color: var(--amber); }
-
-        .tier-optimal {
-            background-color: var(--green-bg);
-            border-color: var(--green-bdr);
-        }
-        .tier-optimal .tier-title { color: var(--green); }
 
         .tier-title {
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            line-height: 1.2;
-            margin-bottom: 2px;
         }
 
         .tier-value {
             font-size: 13px;
-            font-weight: 600;
+            color: var(--text-2);
+            font-weight: 500;
+        }
+
+        .tier-value span {
+            font-size: 18px;
+            font-weight: 700;
             color: var(--text);
         }
 
-        /* FOOTER BRAND SIGNATURE */
-        .portal-footer {
-            margin-top: 50px;
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-        }
+        /* Tier Theme Status Layout Variants */
+        .tier-critical .tier-title { color: var(--red); }
+        .tier-warning .tier-title { color: var(--accent); }
+        .tier-optimal .tier-title { color: var(--green); }
 
-        .footer-brand-text {
-            font-size: 11px;
-            color: var(--text-3);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            font-weight: 500;
-        }
+        .tier-critical-card { border-color: rgba(224, 85, 85, 0.25); }
+        .tier-warning-card  { border-color: rgba(240, 165, 0, 0.25); }
+        .tier-optimal-card  { border-color: rgba(62, 207, 142, 0.25); }
     </style>
 </head>
 <body>
 
     <div id="loadingScreen">
         <div class="ls-logo-area">
-            <img src="logo.png" alt="Shine On Stage Logo" onerror="this.style.display='none'; document.getElementById('ls-star-fallback').style.display='flex';">
-            <div id="ls-star-fallback" class="fallback-star-logo" style="display: none;">★</div>
+            <img src="logo.png" alt="Shine on Stage">
         </div>
         <div class="ls-title">Shine on Stage</div>
-        <div class="ls-hype" id="loadHype"></div>
-        <div class="ls-pct" id="loadPct">0%</div>
+        <div class="ls-hype" id="loadingHype">Initializing Box Office...</div>
+        <div class="ls-pct" id="loadingPct">0%</div>
         <div class="ls-bar-bg">
-            <div class="ls-bar-fill" id="loadBar"></div>
+            <div class="ls-bar-fill" id="loadingBarFill"></div>
         </div>
-        <div class="ls-status" id="loadStatus">Initializing secure runtime components...</div>
+        <div class="ls-status" id="loadingStatus">Connecting to transaction server...</div>
     </div>
 
-    <div class="container">
-        <header class="portal-header">
-            <div class="header-brand-wrap">
-                <img src="logo.png" alt="Portal Logo" onerror="this.style.display='none'; document.getElementById('header-star-fallback').style.display='block';">
-                <div id="header-star-fallback" class="fallback-star" style="display: none;">★</div>
-            </div>
-            <div class="show-info" id="portalTitle">Box Office Hub</div>
-            <div class="show-date" id="portalSubtitle">Select an upcoming production to initialize setup</div>
-        </header>
+    <header class="portal-header">
+        <div class="portal-logo-container">
+            <img src="logo.png" alt="Logo">
+        </div>
+        <h1 class="portal-headline">Ticket Booking Portal</h1>
+        <p class="portal-sub-headline">Select your production performance to check school assignments</p>
+    </header>
 
-        <section id="hubView" class="view-section active">
-            <p class="instruction-text">Please tap your target production event below to analyze and manage live audience allocation balances.</p>
-            <div class="list-grid" id="hubGrid"></div>
-        </section>
+    <main class="show-selector-container">
+        <div class="input-select-wrapper">
+            <select id="showSelector" onchange="handleShowSelectionChange()"></select>
+        </div>
+    </main>
 
-        <section id="listView" class="view-section">
-            <div class="back-btn-container">
-                <button class="back-portal-btn" id="backButton">← Change Production</button>
-            </div>
-            <p class="instruction-text">Select your associated academy training collective below to route your ticket reservations cleanly.</p>
-            <main class="list-grid" id="cardsGrid"></main>
-        </section>
-
-        <footer class="portal-footer">
-            <p class="footer-brand-text">Shine on Stage Live Ecosystem &copy; 2026</p>
-        </footer>
-    </div>
+    <section class="leaderboard-section-title">School Support Leaderboard</section>
+    <section class="leaderboard-cards-wrapper" id="leaderboardContainer"></section>
 
     <script>
         const PORTAL_CONFIG = {
-            jotformBaseUrl: "form.jotform.com/261435880262357", 
-            googleSheetId: "1zyWxHMWAk-fGA22scKX5FxCOALWKMsZ-oIbr5W1fMXs", 
-            dataPollerInterval: 30000, 
-
-            shows: {
-                "albany": {
-                    name: "The Albany Theatre Show",
-                    date: "Sunday 30th June 2026",
+            jotformBaseUrl: "form.jotform.com/261234567890",
+            showsDataManifest: [
+                {
+                    id: "show-001",
+                    name: "Friday Night Live Showcase — 10th July 2026",
                     schools: {
                         "Stardance Academy": 8,
-                        "Elite Moves": 45,
-                        "Grace School of Dance": 15,
-                        "Rhythm Kids": 22,
-                        "Step Up Dance": 30
+                        "Elite Moves": 22,
+                        "Grace School of Dance": 35
                     }
                 },
-                "coventry": {
-                    name: "The Coventry Belgrade Show",
-                    date: "Saturday 12th July 2026",
+                {
+                    id: "show-002",
+                    name: "Saturday Matinee Spectacular — 11th July 2026",
                     schools: {
-                        "Elite Moves": 20, 
+                        "Stardance Academy": 25,
+                        "Velocity Dance": 14,
+                        "Aspire Stage School": 19
+                    }
+                },
+                {
+                    id: "show-003",
+                    name: "Sunday Grand Finale — 12th July 2026",
+                    schools: {
+                        "Elite Moves": 20,
                         "Velocity Dance": 18,
                         "Aspire Stage School": 40
                     }
                 }
+            ],
+            dancersDemographicsRoster: {
+                "Stardance Academy": 12,
+                "Elite Moves": 15,
+                "Grace School of Dance": 14,
+                "Velocity Dance": 10,
+                "Aspire Stage School": 16
             }
         };
 
-        // Live Box Office Oriented Hype Array Matrix
-        const HYPE_MESSAGES = [
-            "CRACKING OPEN THE BOX OFFICE HUB...",
-            "POLISHING THE PROSCENIUM ARCH LIGHTING...",
-            "SECURING FRONT-ROW VIEWING GRIDS...",
-            "PREPARING COVENTRY & ALBANY FLOORPLANS...",
-            "TUNING THE STAGE TRACKING TELEMETRY...",
-            "WARMING UP THE RED CARPET PROTOCOLS...",
-            "MAPPING AUDITORIUM COORDINATES...",
-            "FINALIZING BALCONY SEATING MATRICES...",
-            "UNLEASHING THE LIVE CHEERING SECTIONS...",
-            "PREPARING THE STANDING OVATION ENGINE..."
-        ];
-
-        let selectedActiveShowId = null;
-        let syncedSheetDataset = {};
-        let backgroundRefreshTimer = null;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initializeLoaderSequence();
-            renderCentralProductionHub();
-            document.getElementById('backButton').addEventListener('click', routeBackToHubView);
+        // Execution Hooks
+        window.addEventListener("DOMContentLoaded", () => {
+            populateShowDropdownOptions();
+            executeAppLoadingSequence(false, () => {
+                renderTargetShowLeaderboardCards();
+            });
         });
 
-        // 1:1 Restored Asynchronous Framework Runtime Loader Logic Loop
-        function initializeLoaderSequence() {
-            let currentPct = 0;
-            const pctElement = document.getElementById('loadPct');
-            const barElement = document.getElementById('loadBar');
-            const statusElement = document.getElementById('loadStatus');
-            const hypeElement = document.getElementById('loadHype');
-            const screenElement = document.getElementById('loadingScreen');
+        function populateShowDropdownOptions() {
+            const dropdownElement = document.getElementById("showSelector");
+            dropdownElement.innerHTML = PORTAL_CONFIG.showsDataManifest.map(show => 
+                `<option value="${show.id}">${show.name}</option>`
+            ).join('');
+        }
 
-            // Pick a random box office hype string to initialize the row layout cleanly
-            hypeElement.textContent = HYPE_MESSAGES[Math.floor(Math.random() * HYPE_MESSAGES.length)];
+        function handleShowSelectionChange() {
+            // Trigger a faster intermediate box office reload when switching performances
+            executeAppLoadingSequence(true, () => {
+                renderTargetShowLeaderboardCards();
+            });
+        }
 
-            function step() {
-                // Micro-step increments mimic framework processing stalls perfectly
-                let increment = Math.floor(Math.random() * 6) + 2; 
-                currentPct += increment;
+        /**
+         * ⏳ CORE SIMULATE LOADING ENGINE
+         * Mimics the precise step loop execution framework of index-14.html
+         */
+        function executeAppLoadingSequence(isIntermediateReload = false, completionCallback) {
+            const screen = document.getElementById("loadingScreen");
+            const fill = document.getElementById("loadingBarFill");
+            const pctText = document.getElementById("loadingPct");
+            const statusText = document.getElementById("loadingStatus");
+            const hypeText = document.getElementById("loadingHype");
+
+            // Define specific box office operational logs for the hype fields
+            const boxOfficeHypeMessages = [
+                "INITIALIZING BOX OFFICE...",
+                "LOADING SEATING MANIFESTS...",
+                "MAPPING AUDITORIUM CAPACITY...",
+                "COUNTING TICKET STUBS...",
+                "REFRESHING SALES LOGS...",
+                "SYNCING AUDIENCE DATA...",
+                "VERIFYING SCHOOL SECTIONS...",
+                "BOX OFFICE DATA READY"
+            ];
+
+            const internalStatusLogs = isIntermediateReload 
+                ? [
+                    "Interrogating transaction tokens...",
+                    "Fetching updated stadium maps...",
+                    "Recalculating sales differentials...",
+                    "Populating view layout variables..."
+                  ]
+                : [
+                    "Connecting to transaction server...",
+                    "Requesting secure token validation...",
+                    "Retrieving master box office manifests...",
+                    "Parsing global sales ledger entries...",
+                    "Calculating school support ratios...",
+                    "Building structural leaderboard array..."
+                  ];
+
+            // Reset components completely prior to running loop thread
+            screen.classList.remove("fade-out", "hidden");
+            fill.style.width = "0%";
+            pctText.textContent = "0%";
+            hypeText.textContent = boxOfficeHypeMessages[0];
+            statusText.textContent = internalStatusLogs[0];
+
+            let currentProgress = 0;
+
+            function processIterationStep() {
+                // Adjust cycle jump size depending on whether this is a full initial load or a fast show-switch reload
+                let stepJump = isIntermediateReload 
+                    ? Math.floor(Math.random() * 15) + 10  // Faster step speeds
+                    : Math.floor(Math.random() * 6) + 3;    // Standard production load pace
+
+                currentProgress = Math.min(100, currentProgress + stepJump);
                 
-                if (currentPct > 100) currentPct = 100;
+                // Set UI parameters directly
+                fill.style.width = currentProgress + "%";
+                pctText.textContent = currentProgress + "%";
 
-                pctElement.textContent = currentPct + "%";
-                barElement.style.width = currentPct + "%";
+                // Map specific percent steps evenly across the box office string limits
+                let hypeIndex = Math.floor((currentProgress / 100) * (boxOfficeHypeMessages.length - 1));
+                hypeText.textContent = boxOfficeHypeMessages[hypeIndex];
 
-                // Pacing text changes based on technical progress curves
-                if (currentPct < 25) {
-                    statusElement.textContent = "Connecting to remote database ledger...";
-                } else if (currentPct < 55) {
-                    statusElement.textContent = "Compiling live allocation balances...";
-                } else if (currentPct < 85) {
-                    statusElement.textContent = "Formatting ticket routing conduits...";
+                let statusIndex = Math.floor((currentProgress / 100) * (internalStatusLogs.length - 1));
+                statusText.textContent = internalStatusLogs[statusIndex];
+
+                if (currentProgress < 100) {
+                    let loopDelayInterval = isIntermediateReload ? 40 : 80;
+                    setTimeout(processIterationStep, loopDelayInterval);
                 } else {
-                    statusElement.textContent = "System Ready. Initializing interface ecosystem.";
-                }
-
-                // Randomly rotate hype phrases on major processing checkpoints
-                if (currentPct % 23 === 0 || currentPct === 50 || currentPct === 77) {
-                    hypeElement.textContent = HYPE_MESSAGES[Math.floor(Math.random() * HYPE_MESSAGES.length)];
-                }
-
-                if (currentPct < 100) {
-                    // Random frame timing keeps the load animation feeling slick, organic, and ultra-premium
-                    let frameSpeed = Math.floor(Math.random() * 60) + 15;
-                    if (currentPct > 40 && currentPct < 55) frameSpeed += 40; // Simulated data-burst delay
-                    if (currentPct > 80 && currentPct < 90) frameSpeed += 25; // Simulated processing delay
-                    setTimeout(step, frameSpeed);
-                } else {
-                    // Clean completion hand-off
+                    // Loop execution complete, clean up and terminate screen layers
+                    screen.classList.add("fade-out");
                     setTimeout(() => {
-                        screenElement.classList.add('fade-out');
-                        setTimeout(() => {
-                            screenElement.classList.add('hidden');
-                        }, 400);
-                    }, 350);
+                        screen.classList.add("hidden");
+                        if (completionCallback) completionCallback();
+                    }, 400);
                 }
             }
-            // Trigger loop execution immediately upon thread opening
-            setTimeout(step, 100);
+
+            // Fire loop initiation thread
+            setTimeout(processIterationStep, 100);
         }
 
-        function renderCentralProductionHub() {
-            const hubGrid = document.getElementById('hubGrid');
-            hubGrid.innerHTML = Object.entries(PORTAL_CONFIG.shows).map(([id, eventData]) => `
-                <div class="portal-card" onclick="selectTargetProduction('${id}')">
-                    <div class="card-meta-left">
-                        <div class="card-main-title">${eventData.name}</div>
-                        <div class="card-sub-label">${eventData.date}</div>
-                    </div>
-                    <div class="card-sub-label" style="color: var(--accent); white-space: nowrap;">Open Tracker →</div>
-                </div>
-            `).join('');
-        }
+        function renderTargetShowLeaderboardCards() {
+            const selectedActiveShowId = document.getElementById("showSelector").value;
+            const currentShowDataObj = PORTAL_CONFIG.showsDataManifest.find(item => item.id === selectedActiveShowId);
+            const leaderboardContainer = document.getElementById("leaderboardContainer");
 
-        async function selectTargetProduction(showId) {
-            const loader = document.getElementById('loadingScreen');
-            const pct = document.getElementById('loadPct');
-            const bar = document.getElementById('loadBar');
-            const status = document.getElementById('loadStatus');
-            
-            loader.classList.remove('hidden', 'fade-out');
-            pct.textContent = "0%";
-            bar.style.width = "0%";
-            status.textContent = "Connecting to master database sheets...";
+            if (!currentShowDataObj) return;
 
-            selectedActiveShowId = showId;
-            
-            document.getElementById('portalTitle').textContent = PORTAL_CONFIG.shows[showId].name;
-            document.getElementById('portalSubtitle').textContent = PORTAL_CONFIG.shows[showId].date;
-            
-            document.getElementById('hubView').classList.remove('active');
-            document.getElementById('listView').classList.add('active');
-            
-            await executeCloudSyncCycle();
-            
-            pct.textContent = "100%";
-            bar.style.width = "100%";
-            status.textContent = "Synchronized";
+            const processedLeaderboardArray = Object.keys(currentShowDataObj.schools).map(schoolName => {
+                const totalTicketsSoldBySchool = currentShowDataObj.schools[schoolName];
+                const activeTotalDancersInSchool = PORTAL_CONFIG.dancersDemographicsRoster[schoolName] || 1;
+                const supportRatio = totalTicketsSoldBySchool / activeTotalDancersInSchool;
 
-            setTimeout(() => {
-                loader.classList.add('fade-out');
-                setTimeout(() => loader.classList.add('hidden'), 400);
-            }, 250);
-            
-            if (backgroundRefreshTimer) clearInterval(backgroundRefreshTimer);
-            backgroundRefreshTimer = setInterval(executeCloudSyncCycle, PORTAL_CONFIG.dataPollerInterval);
-        }
+                let dynamicCardTierClass = "";
+                let dynamicCardStatusLabel = "";
 
-        function routeBackToHubView() {
-            if (backgroundRefreshTimer) clearInterval(backgroundRefreshTimer);
-            selectedActiveShowId = null;
-            
-            document.getElementById('portalTitle').textContent = "Box Office Hub";
-            document.getElementById('portalSubtitle').textContent = "Select an upcoming production to initialize setup";
-            
-            document.getElementById('listView').classList.remove('active');
-            document.getElementById('hubView').classList.add('active');
-        }
-
-        async function executeCloudSyncCycle() {
-            await pullRemoteGoogleSheetData();
-            processAndRenderAllocationLeaderboard();
-        }
-
-        async function pullRemoteGoogleSheetData() {
-            try {
-                const targetEndpoint = `https://docs.google.com/spreadsheets/d/${PORTAL_CONFIG.googleSheetId}/gviz/tq?tqx=out:json`;
-                const queryResponse = await fetch(targetEndpoint);
-                const queryRawText = await queryResponse.text();
-                
-                const processedJson = JSON.parse(queryRawText.substring(47).slice(0, -2));
-                const dataRows = processedJson.table.rows;
-                
-                syncedSheetDataset = {};
-                
-                dataRows.forEach(rowItem => {
-                    if (rowItem.c && rowItem.c[1] && rowItem.c[2]) {
-                        const targetShow = rowItem.c[1].v;
-                        const targetSchool = rowItem.c[2].v;
-                        const parsedTicketCount = parseInt(rowItem.c[5]?.v || 0);
-                        
-                        if (!syncedSheetDataset[targetShow]) syncedSheetDataset[targetShow] = {};
-                        if (!syncedSheetDataset[targetShow][targetSchool]) syncedSheetDataset[targetShow][targetSchool] = 0;
-                        
-                        syncedSheetDataset[targetShow][targetSchool] += parsedTicketCount;
-                    }
-                });
-            } catch (networkFault) {
-                console.error("Critical database sync failure:", networkFault);
-            }
-        }
-
-        function processAndRenderAllocationLeaderboard() {
-            if (!selectedActiveShowId) return;
-            
-            const targetedShowMeta = PORTAL_CONFIG.shows[selectedActiveShowId];
-            const liveCalculatedShowMetrics = syncedSheetDataset[selectedActiveShowId] || {};
-            const leaderboardContainer = document.getElementById('cardsGrid');
-            
-            const processedLeaderboardArray = Object.entries(targetedShowMeta.schools).map(([schoolName, capacityDancers]) => {
-                const currentTicketsReserved = liveCalculatedShowMetrics[schoolName] || 0;
-                const supportRatio = currentTicketsReserved / capacityDancers;
-                
-                let dynamicCardTierClass = "tier-critical";
-                let dynamicCardStatusLabel = "Critical Support Needed";
-                
-                if (supportRatio >= 1.2 && supportRatio < 2.0) {
+                if (supportRatio < 1.2) {
+                    dynamicCardTierClass = "tier-critical";
+                    dynamicCardStatusLabel = "Critical Support Needed";
+                } else if (supportRatio >= 1.2 && supportRatio < 2.0) {
                     dynamicCardTierClass = "tier-warning";
                     dynamicCardStatusLabel = "Growing Support";
-                } else if (supportRatio >= 2.0) {
+                } else {
                     dynamicCardTierClass = "tier-optimal";
                     dynamicCardStatusLabel = "Full Cheering Section";
                 }
-                
+
                 return {
                     name: schoolName,
                     metricRatio: supportRatio.toFixed(1),
@@ -708,7 +538,7 @@
             leaderboardContainer.innerHTML = processedLeaderboardArray.map(item => {
                 const structuralDestinationLink = `https://${PORTAL_CONFIG.jotformBaseUrl}?show=${encodeURIComponent(selectedActiveShowId)}&school=${encodeURIComponent(item.name)}`;
                 return `
-                    <a href="${structuralDestinationLink}" class="portal-card">
+                    <a href="${structuralDestinationLink}" class="portal-card ${item.tierStyle}-card">
                         <div class="card-meta-left">
                             <div class="card-main-title">${item.name}</div>
                             <div class="card-sub-label">Click to begin buying tickets →</div>
