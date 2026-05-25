@@ -150,7 +150,7 @@
         }
 
         /* ==========================================
-           🚨 PULSING RED GLOW FOR LOW TURNOUT
+           🚨 PULSING RED GLOW ANIMATION (Low Turnout)
            ========================================== */
         @keyframes pulseRedGlow {
             0% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.2); border-color: rgba(224, 85, 85, 0.25); }
@@ -312,12 +312,12 @@
             color: var(--text);
         }
 
-        /* Status Colors */
+        /* Status Colors mapping explicitly to UI right text blocks */
         .tier-critical .tier-title { color: var(--red); }
         .tier-warning .tier-title { color: var(--accent); }
         .tier-optimal .tier-title { color: var(--green); }
 
-        /* Card Borders */
+        /* Card Outlines mapping explicitly to thresholds */
         .tier-critical-card { animation: pulseRedGlow 2.5s infinite ease-in-out; }
         .tier-warning-card  { border-color: rgba(240, 165, 0, 0.25); }
         .tier-optimal-card  { border-color: rgba(62, 207, 142, 0.25); }
@@ -416,7 +416,7 @@
             });
         }
 
-        // Clean link interception to play the loading sequence before navigating
+        // Handles link interception cleanly without disrupting browser standard redirection operations
         function handleCardClick(url, event) {
             event.preventDefault(); 
             simulateLoading("jotformRedirect", url, null);
@@ -424,7 +424,7 @@
 
         /**
          * ⏳ SIMULATE LOADING ENGINE
-         * Matches the pure mechanical structural loop of index-14.html
+         * Extracted exact structural progress loop architecture directly from index-14.html
          */
         function simulateLoading(type, redirectUrl, callback) {
             const screen = document.getElementById("loadingScreen");
@@ -515,7 +515,7 @@
                 let tierClass = "";
                 let statusLabel = "";
 
-                // Option 3 Turnout Criteria Labels
+                // Exact Option 3 Turnout Threshold Criteria
                 if (ratio < 1.0) {
                     tierClass = "tier-critical";
                     statusLabel = "Low Turnout";
