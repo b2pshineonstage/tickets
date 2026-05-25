@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shine on Stage - Ticket Booking Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     
     <style>
         /* ==========================================
-           🎨 BRANDING & THEME (Matched perfectly to Sign In app)
+           🎨 BRANDING & THEME
            ========================================== */
         :root {
             --bg: #09090C;
@@ -54,18 +54,18 @@
         }
 
         /* ==========================================
-           ⏳ LOADING SCREEN (Identical to Sign In App)
+           ⏳ LOADING SCREEN (Identical to index-14.html layout)
            ========================================== */
         #loadingScreen {
             position: fixed;
-            inset: 0;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: #000;
             z-index: 9999;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            transition: opacity 0.4s;
+            transition: opacity 0.4s ease;
         }
         #loadingScreen.fade-out {
             opacity: 0;
@@ -82,10 +82,8 @@
         .ls-logo-area::before {
             content: "";
             position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 140px;
-            height: 140px;
+            top: 50%; left: 50%;
+            width: 140px; height: 140px;
             background: #F0A500;
             border-radius: 50%;
             transform: translate(-50%, -50%);
@@ -94,8 +92,7 @@
             z-index: 0;
         }
         .ls-logo-area img {
-            width: 140px;
-            height: 140px;
+            width: 140px; height: 140px;
             position: relative;
             z-index: 1;
             object-fit: contain;
@@ -107,7 +104,6 @@
             color: #F0A500;
             text-transform: uppercase;
             margin: 8px 0 24px;
-            font-family: var(--font);
         }
         .ls-hype {
             font-size: 0.75rem;
@@ -115,7 +111,6 @@
             color: #F0A500;
             text-transform: uppercase;
             font-weight: 700;
-            font-family: var(--font);
             height: 1.2rem;
             margin-bottom: 10px;
             text-align: center;
@@ -124,13 +119,11 @@
             font-size: 2.8rem;
             font-weight: 900;
             color: #fff;
-            font-family: var(--font);
             font-variant-numeric: tabular-nums;
             margin-bottom: 10px;
         }
         .ls-bar-bg {
-            width: 220px;
-            height: 3px;
+            width: 220px; height: 3px;
             background: #1a1a1a;
             border-radius: 10px;
             overflow: hidden;
@@ -140,13 +133,11 @@
             background: #F0A500;
             box-shadow: 0 0 12px #F0A500;
             width: 0%;
-            transition: width 0.1s linear;
         }
         .ls-status {
             font-size: 12px;
             color: #555;
             margin-top: 14px;
-            font-family: var(--font);
             font-weight: 500;
             letter-spacing: 0.04em;
             text-align: center;
@@ -156,6 +147,15 @@
             0% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
             50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.4); }
             100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* ==========================================
+           🚨 PULSING RED GLOW KEYFRAME ANIMATION
+           ========================================== */
+        @keyframes pulseRedGlow {
+            0% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.2); border-color: rgba(224, 85, 85, 0.25); }
+            50% { box-shadow: 0 0 14px rgba(224, 85, 85, 0.45); border-color: rgba(224, 85, 85, 0.55); }
+            100% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.2); border-color: rgba(224, 85, 85, 0.25); }
         }
 
         /* ==========================================
@@ -312,12 +312,13 @@
             color: var(--text);
         }
 
-        /* Tier Theme Status Layout Variants */
+        /* Tier Styling Variants */
         .tier-critical .tier-title { color: var(--red); }
         .tier-warning .tier-title { color: var(--accent); }
         .tier-optimal .tier-title { color: var(--green); }
 
-        .tier-critical-card { border-color: rgba(224, 85, 85, 0.25); }
+        /* Normal Borders vs. Glowing Red Warning Card */
+        .tier-critical-card { animation: pulseRedGlow 2.5s infinite ease-in-out; }
         .tier-warning-card  { border-color: rgba(240, 165, 0, 0.25); }
         .tier-optimal-card  { border-color: rgba(62, 207, 142, 0.25); }
     </style>
@@ -326,15 +327,15 @@
 
     <div id="loadingScreen">
         <div class="ls-logo-area">
-            <img src="logo.png" alt="Shine on Stage">
+            <img src="logo.png" alt="Logo">
         </div>
         <div class="ls-title">Shine on Stage</div>
-        <div class="ls-hype" id="loadingHype">Initializing Box Office...</div>
-        <div class="ls-pct" id="loadingPct">0%</div>
+        <div class="ls-hype" id="lsHype">LOADING BOX OFFICE...</div>
+        <div class="ls-pct" id="lsPct">0%</div>
         <div class="ls-bar-bg">
-            <div class="ls-bar-fill" id="loadingBarFill"></div>
+            <div class="ls-bar-fill" id="lsBar"></div>
         </div>
-        <div class="ls-status" id="loadingStatus">Connecting to transaction server...</div>
+        <div class="ls-status" id="lsStatus">Checking box office manifests...</div>
     </div>
 
     <header class="portal-header">
@@ -342,12 +343,12 @@
             <img src="logo.png" alt="Logo">
         </div>
         <h1 class="portal-headline">Ticket Booking Portal</h1>
-        <p class="portal-sub-headline">Select your production performance to check school assignments</p>
+        <p class="portal-sub-headline">Choose your show to see how your school is doing:</p>
     </header>
 
     <main class="show-selector-container">
         <div class="input-select-wrapper">
-            <select id="showSelector" onchange="handleShowSelectionChange()"></select>
+            <select id="showSelector" onchange="handleShowChange()"></select>
         </div>
     </main>
 
@@ -395,157 +396,158 @@
             }
         };
 
-        // Execution Hooks
         window.addEventListener("DOMContentLoaded", () => {
-            populateShowDropdownOptions();
-            executeAppLoadingSequence(false, () => {
-                renderTargetShowLeaderboardCards();
+            populateShows();
+            simulateLoading("initial", null, () => {
+                renderCards();
             });
         });
 
-        function populateShowDropdownOptions() {
-            const dropdownElement = document.getElementById("showSelector");
-            dropdownElement.innerHTML = PORTAL_CONFIG.showsDataManifest.map(show => 
+        function populateShows() {
+            const selector = document.getElementById("showSelector");
+            selector.innerHTML = PORTAL_CONFIG.showsDataManifest.map(show => 
                 `<option value="${show.id}">${show.name}</option>`
             ).join('');
         }
 
-        function handleShowSelectionChange() {
-            // Trigger a faster intermediate box office reload when switching performances
-            executeAppLoadingSequence(true, () => {
-                renderTargetShowLeaderboardCards();
+        function handleShowChange() {
+            simulateLoading("showChange", null, () => {
+                renderCards();
             });
         }
 
-        /**
-         * ⏳ CORE SIMULATE LOADING ENGINE
-         * Mimics the precise step loop execution framework of index-14.html
-         */
-        function executeAppLoadingSequence(isIntermediateReload = false, completionCallback) {
-            const screen = document.getElementById("loadingScreen");
-            const fill = document.getElementById("loadingBarFill");
-            const pctText = document.getElementById("loadingPct");
-            const statusText = document.getElementById("loadingStatus");
-            const hypeText = document.getElementById("loadingHype");
-
-            // Define specific box office operational logs for the hype fields
-            const boxOfficeHypeMessages = [
-                "INITIALIZING BOX OFFICE...",
-                "LOADING SEATING MANIFESTS...",
-                "MAPPING AUDITORIUM CAPACITY...",
-                "COUNTING TICKET STUBS...",
-                "REFRESHING SALES LOGS...",
-                "SYNCING AUDIENCE DATA...",
-                "VERIFYING SCHOOL SECTIONS...",
-                "BOX OFFICE DATA READY"
-            ];
-
-            const internalStatusLogs = isIntermediateReload 
-                ? [
-                    "Interrogating transaction tokens...",
-                    "Fetching updated stadium maps...",
-                    "Recalculating sales differentials...",
-                    "Populating view layout variables..."
-                  ]
-                : [
-                    "Connecting to transaction server...",
-                    "Requesting secure token validation...",
-                    "Retrieving master box office manifests...",
-                    "Parsing global sales ledger entries...",
-                    "Calculating school support ratios...",
-                    "Building structural leaderboard array..."
-                  ];
-
-            // Reset components completely prior to running loop thread
-            screen.classList.remove("fade-out", "hidden");
-            fill.style.width = "0%";
-            pctText.textContent = "0%";
-            hypeText.textContent = boxOfficeHypeMessages[0];
-            statusText.textContent = internalStatusLogs[0];
-
-            let currentProgress = 0;
-
-            function processIterationStep() {
-                // Adjust cycle jump size depending on whether this is a full initial load or a fast show-switch reload
-                let stepJump = isIntermediateReload 
-                    ? Math.floor(Math.random() * 15) + 10  // Faster step speeds
-                    : Math.floor(Math.random() * 6) + 3;    // Standard production load pace
-
-                currentProgress = Math.min(100, currentProgress + stepJump);
-                
-                // Set UI parameters directly
-                fill.style.width = currentProgress + "%";
-                pctText.textContent = currentProgress + "%";
-
-                // Map specific percent steps evenly across the box office string limits
-                let hypeIndex = Math.floor((currentProgress / 100) * (boxOfficeHypeMessages.length - 1));
-                hypeText.textContent = boxOfficeHypeMessages[hypeIndex];
-
-                let statusIndex = Math.floor((currentProgress / 100) * (internalStatusLogs.length - 1));
-                statusText.textContent = internalStatusLogs[statusIndex];
-
-                if (currentProgress < 100) {
-                    let loopDelayInterval = isIntermediateReload ? 40 : 80;
-                    setTimeout(processIterationStep, loopDelayInterval);
-                } else {
-                    // Loop execution complete, clean up and terminate screen layers
-                    screen.classList.add("fade-out");
-                    setTimeout(() => {
-                        screen.classList.add("hidden");
-                        if (completionCallback) completionCallback();
-                    }, 400);
-                }
-            }
-
-            // Fire loop initiation thread
-            setTimeout(processIterationStep, 100);
+        function handleCardClick(url, event) {
+            event.preventDefault();
+            simulateLoading("jotformRedirect", url, null);
         }
 
-        function renderTargetShowLeaderboardCards() {
-            const selectedActiveShowId = document.getElementById("showSelector").value;
-            const currentShowDataObj = PORTAL_CONFIG.showsDataManifest.find(item => item.id === selectedActiveShowId);
-            const leaderboardContainer = document.getElementById("leaderboardContainer");
+        /**
+         * ⏳ SIMULATE LOADING ENGINE
+         * Matches the pure mechanical structural loop of index-14.html
+         */
+        function simulateLoading(type, redirectUrl, callback) {
+            const screen = document.getElementById("loadingScreen");
+            const bar = document.getElementById("lsBar");
+            const pct = document.getElementById("lsPct");
+            const hype = document.getElementById("lsHype");
+            const status = document.getElementById("lsStatus");
 
-            if (!currentShowDataObj) return;
+            screen.classList.remove("fade-out", "hidden");
+            bar.style.width = "0%";
+            pct.textContent = "0%";
 
-            const processedLeaderboardArray = Object.keys(currentShowDataObj.schools).map(schoolName => {
-                const totalTicketsSoldBySchool = currentShowDataObj.schools[schoolName];
-                const activeTotalDancersInSchool = PORTAL_CONFIG.dancersDemographicsRoster[schoolName] || 1;
-                const supportRatio = totalTicketsSoldBySchool / activeTotalDancersInSchool;
+            let p = 0;
+            // Setup precise interval speeds depending on context mode
+            let intervalSpeed = (type === "initial") ? 30 : 12;
 
-                let dynamicCardTierClass = "";
-                let dynamicCardStatusLabel = "";
-
-                if (supportRatio < 1.2) {
-                    dynamicCardTierClass = "tier-critical";
-                    dynamicCardStatusLabel = "Critical Support Needed";
-                } else if (supportRatio >= 1.2 && supportRatio < 2.0) {
-                    dynamicCardTierClass = "tier-warning";
-                    dynamicCardStatusLabel = "Growing Support";
+            let timer = setInterval(() => {
+                // Production steps matching loop calculations
+                p += (type === "initial") ? Math.floor(Math.random() * 5) + 2 : Math.floor(Math.random() * 15) + 8;
+                
+                if (p >= 100) {
+                    p = 100;
+                    clearInterval(timer);
+                    bar.style.width = "100%";
+                    pct.textContent = "100%";
+                    
+                    if (type === "initial") {
+                        hype.textContent = "MAPPING THEATER SEATING...";
+                        status.textContent = "Seating arrangements configured.";
+                    } else if (type === "showChange") {
+                        hype.textContent = "LOADING DANCE SCHOOLS...";
+                        status.textContent = "School data loaded.";
+                    } else {
+                        hype.textContent = "OPENING TICKET PORTAL...";
+                        status.textContent = "Secure checkout ready.";
+                    }
+                    
+                    setTimeout(() => {
+                        screen.classList.add("fade-out");
+                        setTimeout(() => {
+                            screen.classList.add("hidden");
+                            if (redirectUrl) {
+                                window.location.href = redirectUrl;
+                            } else if (callback) {
+                                callback();
+                            }
+                        }, 400);
+                    }, 200);
                 } else {
-                    dynamicCardTierClass = "tier-optimal";
-                    dynamicCardStatusLabel = "Full Cheering Section";
+                    bar.style.width = p + "%";
+                    pct.textContent = p + "%";
+
+                    // Apply context texts dynamically mapping across percentage intervals
+                    if (type === "initial") {
+                        if (p < 25) {
+                            hype.textContent = "LOADING BOX OFFICE...";
+                            status.textContent = "Opening channels...";
+                        } else if (p < 50) {
+                            hype.textContent = "TURNING ON THE POPCORN MACHINE...";
+                            status.textContent = "Heating up elements...";
+                        } else if (p < 75) {
+                            hype.textContent = "TESTING THE SPOTLIGHT...";
+                            status.textContent = "Calibrating stage frames...";
+                        } else {
+                            hype.textContent = "MAPPING THEATER SEATING...";
+                            status.textContent = "Calculating seat distributions...";
+                        }
+                    } else if (type === "showChange") {
+                        hype.textContent = "LOADING DANCE SCHOOLS...";
+                        status.textContent = "Swapping performance rosters...";
+                    } else {
+                        hype.textContent = "OPENING TICKET PORTAL...";
+                        status.textContent = "Forwarding safely to checkout secure lines...";
+                    }
+                }
+            }, intervalSpeed);
+        }
+
+        function renderCards() {
+            const selectedShowId = document.getElementById("showSelector").value;
+            const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === selectedShowId);
+            const container = document.getElementById("leaderboardContainer");
+
+            if (!showData) return;
+
+            const cardsData = Object.keys(showData.schools).map(schoolName => {
+                const sold = showData.schools[schoolName];
+                const dancers = PORTAL_CONFIG.dancersDemographicsRoster[schoolName] || 1;
+                const ratio = sold / dancers;
+
+                let tierClass = "";
+                let statusLabel = "";
+
+                // Precise Simple Turnout Threshold Criteria (Option 3)
+                if (ratio < 1.0) {
+                    tierClass = "tier-critical";
+                    statusLabel = "Low Turnout";
+                } else if (ratio >= 1.0 && ratio < 1.5) {
+                    tierClass = "tier-warning";
+                    statusLabel = "Good Turnout";
+                } else {
+                    tierClass = "tier-optimal";
+                    statusLabel = "Excellent Turnout";
                 }
 
                 return {
                     name: schoolName,
-                    metricRatio: supportRatio.toFixed(1),
-                    tierStyle: dynamicCardTierClass,
-                    statusText: dynamicCardStatusLabel
+                    ratio: ratio.toFixed(1),
+                    tierClass: tierClass,
+                    statusText: statusLabel
                 };
-            }).sort((alpha, beta) => alpha.name.localeCompare(beta.name));
+            }).sort((a, b) => a.name.localeCompare(b.name));
 
-            leaderboardContainer.innerHTML = processedLeaderboardArray.map(item => {
-                const structuralDestinationLink = `https://${PORTAL_CONFIG.jotformBaseUrl}?show=${encodeURIComponent(selectedActiveShowId)}&school=${encodeURIComponent(item.name)}`;
+            container.innerHTML = cardsData.map(item => {
+                const url = `https://${PORTAL_CONFIG.jotformBaseUrl}?show=${encodeURIComponent(selectedShowId)}&school=${encodeURIComponent(item.name)}`;
                 return `
-                    <a href="${structuralDestinationLink}" class="portal-card ${item.tierStyle}-card">
+                    <a href="${url}" onclick="handleCardClick('${url}', event)" class="portal-card ${item.tierClass}-card">
                         <div class="card-meta-left">
                             <div class="card-main-title">${item.name}</div>
                             <div class="card-sub-label">Click to begin buying tickets →</div>
                         </div>
-                        <div class="card-metric-right ${item.tierStyle}">
+                        <div class="card-metric-right ${item.tierClass}">
                             <div class="tier-title">${item.statusText}</div>
-                            <div class="tier-value"><span>${item.metricRatio}</span> Seats / Dancer</div>
+                            <div class="tier-value"><span>${item.ratio}</span> Seats / Dancer</div>
                         </div>
                     </a>
                 `;
