@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shine on Stage - Ticket Booking Portal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         /* ==========================================
@@ -54,7 +54,7 @@
         }
 
         /* ==========================================
-           ⏳ LOADING SCREEN (Identical to index-14.html layout)
+           ⏳ LOADING SCREEN (Matched to exact index-14.html styles)
            ========================================== */
         #loadingScreen {
             position: fixed;
@@ -99,7 +99,7 @@
         }
         .ls-title {
             font-size: 1.1rem;
-            font-weight: 900;
+            font-weight: 700;
             letter-spacing: 5px;
             color: #F0A500;
             text-transform: uppercase;
@@ -117,7 +117,7 @@
         }
         .ls-pct {
             font-size: 2.8rem;
-            font-weight: 900;
+            font-weight: 700;
             color: #fff;
             font-variant-numeric: tabular-nums;
             margin-bottom: 10px;
@@ -150,12 +150,17 @@
         }
 
         /* ==========================================
-           🚨 PULSING RED GLOW ANIMATION (Low Turnout)
+           🚨 PULSING RED GLOW KEYFRAMES (Icon and Cards)
            ========================================== */
         @keyframes pulseRedGlow {
             0% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.2); border-color: rgba(224, 85, 85, 0.25); }
-            50% { box-shadow: 0 0 14px rgba(224, 85, 85, 0.45); border-color: rgba(224, 85, 85, 0.55); }
+            50% { box-shadow: 0 0 14px rgba(224, 85, 85, 0.50); border-color: rgba(224, 85, 85, 0.60); }
             100% { box-shadow: 0 0 4px rgba(224, 85, 85, 0.2); border-color: rgba(224, 85, 85, 0.25); }
+        }
+        @keyframes pulseDotGlow {
+            0% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 0 0 rgba(224, 85, 85, 0.7); }
+            70% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 0 8px rgba(224, 85, 85, 0); }
+            100% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 0 0 rgba(224, 85, 85, 0); }
         }
 
         /* ==========================================
@@ -278,7 +283,22 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
+        /* 🔴 GLOWING STATUS ICON INNER ASSIGNMENTS */
+        .turnout-status-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .icon-critical { background: var(--red); animation: pulseDotGlow 1.8s infinite ease-in-out; }
+        .icon-warning  { background: var(--accent); }
+        .icon-optimal  { background: var(--green); }
 
         .card-sub-label {
             font-size: 13px;
@@ -312,12 +332,12 @@
             color: var(--text);
         }
 
-        /* Status Colors mapping explicitly to UI right text blocks */
+        /* Support Color Targets */
         .tier-critical .tier-title { color: var(--red); }
         .tier-warning .tier-title { color: var(--accent); }
         .tier-optimal .tier-title { color: var(--green); }
 
-        /* Card Outlines mapping explicitly to thresholds */
+        /* Card Container Targets */
         .tier-critical-card { animation: pulseRedGlow 2.5s infinite ease-in-out; }
         .tier-warning-card  { border-color: rgba(240, 165, 0, 0.25); }
         .tier-optimal-card  { border-color: rgba(62, 207, 142, 0.25); }
@@ -416,17 +436,16 @@
             });
         }
 
-        // Handles link interception cleanly without disrupting browser standard redirection operations
-        function handleCardClick(url, event) {
-            event.preventDefault(); 
-            simulateLoading("jotformRedirect", url, null);
+        function navigateToJotform(url) {
+            simulateLoading("jotformRedirect", null, () => {
+                window.location.href = url;
+            });
         }
 
         /**
          * ⏳ SIMULATE LOADING ENGINE
-         * Extracted exact structural progress loop architecture directly from index-14.html
          */
-        function simulateLoading(type, redirectUrl, callback) {
+        function simulateLoading(type, absoluteUrl, completedCallback) {
             const screen = document.getElementById("loadingScreen");
             const bar = document.getElementById("lsBar");
             const pct = document.getElementById("lsPct");
@@ -464,11 +483,7 @@
                         screen.classList.add("fade-out");
                         setTimeout(() => {
                             screen.classList.add("hidden");
-                            if (redirectUrl) {
-                                window.location.href = redirectUrl;
-                            } else if (callback) {
-                                callback();
-                            }
+                            if (completedCallback) completedCallback();
                         }, 400);
                     }, 200);
                 } else {
@@ -513,17 +528,20 @@
                 const ratio = sold / dancers;
 
                 let tierClass = "";
+                let iconClass = "";
                 let statusLabel = "";
 
-                // Exact Option 3 Turnout Threshold Criteria
                 if (ratio < 1.0) {
                     tierClass = "tier-critical";
+                    iconClass = "icon-critical";
                     statusLabel = "Low Turnout";
                 } else if (ratio >= 1.0 && ratio < 1.5) {
                     tierClass = "tier-warning";
+                    iconClass = "icon-warning";
                     statusLabel = "Good Turnout";
                 } else {
                     tierClass = "tier-optimal";
+                    iconClass = "icon-optimal";
                     statusLabel = "Excellent Turnout";
                 }
 
@@ -531,6 +549,7 @@
                     name: schoolName,
                     ratio: ratio.toFixed(1),
                     tierClass: tierClass,
+                    iconClass: iconClass,
                     statusText: statusLabel
                 };
             }).sort((a, b) => a.name.localeCompare(b.name));
@@ -538,9 +557,12 @@
             container.innerHTML = cardsData.map(item => {
                 const url = `https://${PORTAL_CONFIG.jotformBaseUrl}?show=${encodeURIComponent(selectedShowId)}&school=${encodeURIComponent(item.name)}`;
                 return `
-                    <a href="${url}" onclick="handleCardClick('${url}', event)" class="portal-card ${item.tierClass}-card">
+                    <a href="javascript:void(0);" onclick="navigateToJotform('${url}')" class="portal-card ${item.tierClass}-card">
                         <div class="card-meta-left">
-                            <div class="card-main-title">${item.name}</div>
+                            <div class="card-main-title">
+                                <span class="turnout-status-icon ${item.iconClass}"></span>
+                                ${item.name}
+                            </div>
                             <div class="card-sub-label">Click to begin buying tickets →</div>
                         </div>
                         <div class="card-metric-right ${item.tierClass}">
