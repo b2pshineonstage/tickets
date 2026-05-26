@@ -140,8 +140,7 @@
             0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }  
             50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.4); }  
         }  
-        
-        /* 🔥 THE GLOWING RED BALL KEYFRAMES RESTORED */  
+          
         @keyframes pulseDotGlow {  
             0%, 100% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 0 0 rgba(224, 85, 85, 0.7); }  
             70% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 0 8px rgba(224, 85, 85, 0); }  
@@ -314,7 +313,6 @@
             display: inline-block;  
             flex-shrink: 0;  
         }  
-        /* 🔥 GLOW ANIMATION ATTACHED BACK TO CRITICAL LOW TURNOUT */  
         .icon-critical { background: var(--red); animation: pulseDotGlow 1.8s infinite ease-in-out; }  
         .icon-warning  { background: var(--accent); }  
         .icon-optimal  { background: var(--green); }  
@@ -343,7 +341,7 @@
         .tier-warning .tier-title { color: var(--accent); }  
         .tier-optimal .tier-title { color: var(--green); }  
         .tier-pending .tier-title { color: var(--text-3); }  
-        
+          
         @media (max-width: 480px) {  
             .portal-card { padding: 16px 14px; }  
             .card-main-title { font-size: 14px; }  
@@ -396,8 +394,7 @@
             const pct = document.getElementById("lsPct");  
             const hype = document.getElementById("lsHype");  
             const status = document.getElementById("lsStatus");  
-            
-            // 🔄 RESTORED PHRASE SYNC WITH NON-STOP PROGRESS ENGINE  
+              
             function updateLoader() {  
                 if (apiFinished) return;  
 
@@ -417,26 +414,24 @@
                 if (bar) bar.style.width = currentProgress.toFixed(1) + "%";  
                 if (pct) pct.textContent = displayPct + "%";  
 
-                // Dynamically swap the exact phrases based on deceleration breakpoints  
-if (hype && status) {  
-    if (displayPct < 35) {  
-        hype.textContent = "CURTAIN RISING...";  
-        status.textContent = "Securing your front row manifest...";  
-    } else if (displayPct < 70) {  
-        hype.textContent = "LIGHTS DIMMING...";  
-        status.textContent = "Syncing live theatre box office data...";  
-    } else {  
-        hype.textContent = "PLACES PLEASE...";  
-        status.textContent = "Finalizing allocation maps... ready for booking!";  
-    }  
-}
+                if (hype && status) {  
+                    if (displayPct < 35) {  
+                        hype.textContent = "CURTAIN RISING...";  
+                        status.textContent = "Securing your front row manifest...";  
+                    } else if (displayPct < 70) {  
+                        hype.textContent = "LIGHTS DIMMING...";  
+                        status.textContent = "Syncing live theatre box office data...";  
+                    } else {  
+                        hype.textContent = "PLACES PLEASE...";  
+                        status.textContent = "Finalizing allocation maps... ready for booking!";  
+                    }  
+                }  
 
                 setTimeout(updateLoader, 60);  
             }  
-            
+              
             updateLoader();  
 
-            // Network Fetch  
             fetch(PORTAL_CONFIG.googleSheetApiUrl, {  
                 method: "GET",  
                 headers: { "Content-Type": "text/plain;charset=utf-8" }  
@@ -444,13 +439,13 @@ if (hype && status) {
             .then(response => response.json())  
             .then(liveFeedData => {  
                 apiFinished = true;  
-                
+                  
                 if (bar) bar.style.width = "100%";  
                 if (pct) pct.textContent = "100%";  
 
                 PORTAL_CONFIG.showsDataManifest = liveFeedData.shows || [];  
                 PORTAL_CONFIG.dancersDemographicsRoster = liveFeedData.roster || {};  
-                
+                  
                 populateShows();  
 
                 const screen = document.getElementById("loadingScreen");  
@@ -483,13 +478,13 @@ if (hype && status) {
             if (!showData) return;  
 
             document.getElementById("showSelectionContainer").style.display = "none";  
-              
+                
             document.getElementById("dynamicHeaderContainer").innerHTML = `  
                 <div class="portal-gold-header">Select the school you're coming to support...</div>  
                 <br>  
                 <div class="portal-white-subheader">You're coming to: <b>${showData.name}</b></div>  
             `;  
-              
+                
             document.getElementById("leaderboardWrapper").style.display = "block";  
             renderCards();  
         }  
@@ -502,10 +497,10 @@ if (hype && status) {
 
             const cardsData = Object.keys(showData.schools).map(schoolName => {  
                 const sold = Number(showData.schools[schoolName]) || 0;  
-                
+                  
                 const cleanKey = schoolName.replace(/\s+/g, '').toLowerCase();  
                 let dancers = 0;  
-                
+                  
                 for (let key in PORTAL_CONFIG.dancersDemographicsRoster) {  
                     if (key.replace(/\s+/g, '').toLowerCase() === cleanKey) {  
                         dancers = Number(PORTAL_CONFIG.dancersDemographicsRoster[key]) || 0;  
@@ -513,13 +508,12 @@ if (hype && status) {
                     }  
                 }  
 
-                // Ratio Mathematics Check  
                 let ratio = 0;  
                 if (sold > 0) {  
                     if (dancers > 0) {  
                         ratio = sold / dancers;  
                     } else {  
-                        ratio = sold / 15; // Realistic baseline fallback avoids a 5.0 spike if data name mapping breaks  
+                        ratio = sold / 15;  
                     }  
                 }  
 
@@ -564,8 +558,9 @@ if (hype && status) {
 
                 const accentStyle = (item.sold === 0) ? 'color: var(--accent); font-weight: 500;' : 'color: var(--text-3); font-weight: 400;';  
 
+                // Direct URL redirection assignment replaces missing simulateLoading layout hook
                 return `  
-                    <a href="${queryDestinationUrl}" class="portal-card">  
+                    <a href="javascript:void(0);" onclick="window.location.href='${queryDestinationUrl}'" class="portal-card">  
                         <div class="card-meta-left">  
                             <div class="card-main-title">${item.name}</div>  
                             <div class="card-sub-label" style="${accentStyle}">${sublabelText}</div>  
