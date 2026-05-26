@@ -380,7 +380,7 @@
     <div id="loadingScreen">
         <div class="ls-logo-area"><img src="logo.png" alt="Logo"></div>
         <div class="ls-title">Shine on Stage</div>
-        <div class="ls-hype" id="lsHype">LOADING BOX BOX OFFICE...</div>
+        <div class="ls-hype" id="lsHype">LOADING BOX OFFICE...</div>
         <div class="ls-pct" id="lsPct">0%</div>
         <div class="ls-bar-bg"><div class="ls-bar-fill" id="lsBar"></div></div>
         <div class="ls-status" id="lsStatus">Checking box office manifests...</div>
@@ -482,4 +482,146 @@
 
             screen.classList.remove("fade-out", "hidden");
             bar.style.width = "0%";
-            pct
+            pct.textContent = "0%";
+
+            let p = 0;
+            let intervalSpeed = (type === "initial") ? 30 : 12;
+
+            let timer = setInterval(() => {
+                p += (type === "initial") ? Math.floor(Math.random() * 5) + 2 : Math.floor(Math.random() * 15) + 8;
+                
+                if (p >= 100) {
+                    p = 100;
+                    clearInterval(timer);
+                    bar.style.width = "100%";
+                    pct.textContent = "100%";
+                    
+                    if (type === "initial") {
+                        hype.textContent = "MAPPING THEATER SEATING...";
+                        status.textContent = "Seating arrangements configured.";
+                    } else if (type === "showChange") {
+                        hype.textContent = "LOADING DANCE SCHOOLS...";
+                        status.textContent = "School data loaded.";
+                    } else {
+                        hype.textContent = "OPENING TICKET PORTAL...";
+                        status.textContent = "Secure checkout ready.";
+                    }
+
+                    if (completedCallback) completedCallback();
+                    
+                    if (type === "jotformRedirect" && absoluteUrl) {
+                        window.location.href = absoluteUrl;
+                    } else {
+                        setTimeout(() => {
+                            screen.classList.add("fade-out");
+                            setTimeout(() => {
+                                screen.classList.add("hidden");
+                            }, 400);
+                        }, 200);
+                    }
+                } else {
+                    bar.style.width = p + "%";
+                    pct.textContent = p + "%";
+
+                    if (type === "initial") {
+                        if (p < 25) {
+                            hype.textContent = "LOADING BOX OFFICE...";
+                            status.textContent = "Opening channels...";
+                        } else if (p < 50) {
+                            hype.textContent = "TURNING ON THE POPCORN MACHINE...";
+                            status.textContent = "Heating up elements...";
+                        } else if (p < 75) {
+                            hype.textContent = "TESTING THE SPOTLIGHT...";
+                            status.textContent = "Calibrating stage frames...";
+                        } else {
+                            hype.textContent = "MAPPING THEATER SEATING...";
+                            status.textContent = "Calculating seat distributions...";
+                        }
+                    } else if (type === "showChange") {
+                        hype.textContent = "LOADING DANCE SCHOOLS...";
+                        status.textContent = "Swapping performance rosters...";
+                    } else {
+                        hype.textContent = "OPENING TICKET PORTAL...";
+                        status.textContent = "Forwarding safely to checkout secure lines...";
+                    }
+                }
+            }, intervalSpeed);
+        }
+
+        function renderCards() {
+            const selectedShowId = activeShowId;
+            const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === selectedShowId);
+            const container = document.getElementById("leaderboardContainer");
+
+            if (!showData) return;
+
+            const cardsData = Object.keys(showData.schools).map(schoolName => {
+                const sold = Number(showData.schools[schoolName]) || 0;
+                const dancers = Number(PORTAL_CONFIG.dancersDemographicsRoster[schoolName]) || 1;
+                const ratio = sold / dancers;
+
+                let tierClass = "";
+                let iconClass = "";
+                let statusLabel = "";
+
+                if (sold < PORTAL_CONFIG.minSalesThreshold) {
+                    tierClass = "tier-pending";
+                    iconClass = "icon-pending";
+                    statusLabel = "Ticket Sales Open";
+                } else if (ratio < 1.0) {
+                    tierClass = "tier-critical";
+                    iconClass = "icon-critical";
+                    statusLabel = "Low Turnout";
+                } else if (ratio >= 1.0 && ratio < 1.5) {
+                    tierClass = "tier-warning";
+                    iconClass = "icon-warning";
+                    statusLabel = "Good Turnout";
+                } else {
+                    tierClass = "tier-optimal";
+                    iconClass = "icon-optimal";
+                    statusLabel = "Excellent Turnout";
+                }
+
+                return {
+                    name: schoolName,
+                    sold: sold,
+                    ratio: ratio, 
+                    tierClass: tierClass,
+                    iconClass: iconClass,
+                    statusText: statusLabel
+                };
+            }).sort((a, b) => a.name.localeCompare(b.name));
+
+            container.innerHTML = cardsData.map(item => {
+                const targetShowParam = encodeURIComponent(showData.name);
+                const targetSchoolParam = encodeURIComponent(item.name);
+                const queryDestinationUrl = `${PORTAL_CONFIG.jotformBaseUrl}?show=${targetShowParam}&school=${targetSchoolParam}`;
+                
+                const sublabelText = (item.sold === 0) 
+                    ? `Be the first to secure tickets for this school! →`
+                    : `Click to buy tickets for this school →`;
+
+                const metricBoxHtml = (item.sold === 0) ? '' : `
+                    <div class="card-metric-right ${item.tierClass}">
+                        <div class="tier-status-wrapper">
+                            🎟️ <span class="turnout-status-icon ${item.iconClass}"></span>
+                            <div class="tier-title">${item.statusText}</div>
+                        </div>
+                        <div class="tier-value"><span>${item.ratio.toFixed(1)}</span> Seats / Dancer</div>
+                    </div>
+                `;
+
+                return `
+                    <a href="javascript:void(0);" onclick="routeToBooking('${queryDestinationUrl}')" class="portal-card">
+                        <div class="card-meta-left">
+                            <div class="card-main-title">${item.name}</div>
+                            <div class="card-sub-label" style="color: ${item.sold === 0 ? 'var(--accent)' : 'var(--text-3)'}; font-weight: ${item.sold === 0 ? '500' : '400'};">${sublabelText}</div>
+                        </div>
+                        ${metricBoxHtml}
+                    </a>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
