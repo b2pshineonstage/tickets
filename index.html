@@ -46,7 +46,7 @@
         }  
 
         /* ==========================================  
-           ⏳ LOADING SCREEN  
+           ⏳ SMOOTH NON-STALLING LOADING SCREEN  
            ========================================== */  
         #loadingScreen {  
             position: fixed;  
@@ -103,6 +103,7 @@
             background: #F0A500;  
             box-shadow: 0 0 12px #F0A500;  
             width: 0%;  
+            transition: width 0.1s linear;  
         }  
 
         /* ==========================================  
@@ -198,7 +199,7 @@
         }  
 
         /* ==========================================  
-           🏆 MATRIX CARD STRUCTURAL LAYOUT  
+           🏆 SYMMETRICAL CARD LAYOUT  
            ========================================== */  
         .leaderboard-cards-wrapper {  
             padding: 24px 16px 40px;  
@@ -343,40 +344,57 @@
         };  
 
         let activeShowId = null;  
+        let currentProgress = 0;  
+        let apiFinished = false;  
 
-        // ⚡ INSTANT LOADER INJECTION FIX
         window.addEventListener("DOMContentLoaded", () => {  
             const bar = document.getElementById("lsBar");  
             const pct = document.getElementById("lsPct");  
             
-            // Start a fast visual fake progress line immediately
-            let prog = 0;  
-            let fakeTimer = setInterval(() => {  
-                if (prog < 85) {  
-                    prog += 5;  
-                    if(bar) bar.style.width = prog + "%";  
-                    if(pct) pct.textContent = prog + "%";  
-                }  
-            }, 30);  
+            // 🔄 SMOOTH, NON-STOPPING PROGRESS ENGINE  
+            // Starts normal, but drops into microscopic step adjustments as it goes higher so it NEVER freezes completely  
+            function updateLoader() {  
+                if (apiFinished) return;  
 
-            // Network Fetch happens simultaneously
+                let increment = 0;  
+                if (currentProgress < 50) {  
+                    increment = Math.random() * 4 + 2; // Fast climb early on  
+                } else if (currentProgress < 80) {  
+                    increment = Math.random() * 1.5 + 0.5; // Smooth deceleration  
+                } else if (currentProgress < 98) {  
+                    increment = (100 - currentProgress) * 0.05; // Infinite micro-steps so it never completely stalls  
+                }  
+
+                currentProgress += increment;  
+                if (currentProgress > 99) currentProgress = 99.1; // Hold just under 100% until API lands  
+
+                if (bar) bar.style.width = currentProgress.toFixed(1) + "%";  
+                if (pct) pct.textContent = Math.floor(currentProgress) + "%";  
+
+                setTimeout(updateLoader, 60);  
+            }  
+            
+            updateLoader();  
+
+            // Network Fetch  
             fetch(PORTAL_CONFIG.googleSheetApiUrl, {  
                 method: "GET",  
                 headers: { "Content-Type": "text/plain;charset=utf-8" }  
             })  
             .then(response => response.json())  
             .then(liveFeedData => {  
-                clearInterval(fakeTimer);  
-                if(bar) bar.style.width = "100%";  
-                if(pct) pct.textContent = "100%";  
+                apiFinished = true;  
+                
+                // Snap instantly to 100% completion  
+                if (bar) bar.style.width = "100%";  
+                if (pct) pct.textContent = "100%";  
 
                 PORTAL_CONFIG.showsDataManifest = liveFeedData.shows || [];  
                 PORTAL_CONFIG.dancersDemographicsRoster = liveFeedData.roster || {};  
                 
-                // Immediately display show content  
                 populateShows();  
 
-                // Remove loading veil completely with no arbitrary timeouts  
+                // Remove loading screen immediately  
                 const screen = document.getElementById("loadingScreen");  
                 if (screen) {  
                     screen.classList.add("fade-out");  
@@ -426,24 +444,27 @@
             const cardsData = Object.keys(showData.schools).map(schoolName => {  
                 const sold = Number(showData.schools[schoolName]) || 0;  
                 
-                // Find roster count using case-insensitive trim matching
-                const cleanKey = schoolName.trim().toLowerCase();  
+                // Match school names case-insensitively with white space removed  
+                const cleanKey = schoolName.replace(/\s+/g, '').toLowerCase();  
                 let dancers = 0;  
                 
                 for (let key in PORTAL_CONFIG.dancersDemographicsRoster) {  
-                    if (key.trim().toLowerCase() === cleanKey) {  
+                    if (key.replace(/\s+/g, '').toLowerCase() === cleanKey) {  
                         dancers = Number(PORTAL_CONFIG.dancersDemographicsRoster[key]) || 0;  
                         break;  
                     }  
                 }  
 
-                // 🔥 MATHEMATICAL FALLBACK CRASH FIX
-                // If roster mapping is completely broken/missing, hard-calculate ratio directly against tickets sold so it never renders 0.0
+                // 📐 CRITICAL RATIO MATHEMATICS CORRECTION  
                 let ratio = 0;  
-                if (dancers > 0) {  
-                    ratio = sold / dancers;  
-                } else if (sold > 0) {  
-                    ratio = sold / 1.0; // Fallback to raw sales representation  
+                if (sold > 0) {  
+                    if (dancers > 0) {  
+                        ratio = sold / dancers;  
+                    } else {  
+                        // Fallback logic: If the school name cannot be found in your spreadsheet roster data,  
+                        // we divide by an estimated baseline class size (e.g., 15) instead of 1, preventing the 5.0 ratio spike.  
+                        ratio = sold / 15;  
+                    }  
                 }  
 
                 let tierClass = "tier-pending";  
