@@ -135,9 +135,6 @@
             padding: 0 20px;  
         }  
 
-        /* ==========================================  
-           🚨 ANIMATIONS  
-           ========================================== */  
         @keyframes glowPulse {  
             0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }  
             50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.4); }  
@@ -148,7 +145,7 @@
         }  
 
         /* ==========================================  
-           📱 PORTAL UI MAIN LAYOUT & WIZARD TYPOGRAPHY  
+           📱 PORTAL UI MAIN LAYOUT  
            ========================================== */  
         .portal-header {  
             padding: 24px 16px 12px;  
@@ -183,7 +180,6 @@
             color: var(--accent);  
             line-height: 1.4;  
             letter-spacing: -0.01em;  
-            -webkit-font-smoothing: antialiased;  
             display: block;  
         }  
 
@@ -194,7 +190,6 @@
             color: var(--text);  
             line-height: 1.4;  
             letter-spacing: -0.01em;  
-            -webkit-font-smoothing: antialiased;  
             display: block;  
         }  
 
@@ -221,13 +216,8 @@
             transition: transform 0.15s ease, border-color 0.15s ease;  
         }  
 
-        .show-card:hover {  
-            border-color: var(--accent);  
-        }  
-
-        .show-card:active {  
-            transform: scale(0.98);  
-        }  
+        .show-card:hover { border-color: var(--accent); }  
+        .show-card:active { transform: scale(0.98); }  
 
         .show-card-title {  
             font-size: 16px;  
@@ -247,7 +237,7 @@
         }  
 
         /* ==========================================  
-           🏆 CARD MATRIX LAYOUT  
+           🏆 MATRIX CARD STRUCTURAL LAYOUT  
            ========================================== */  
         .leaderboard-cards-wrapper {  
             padding: 24px 16px 40px;  
@@ -263,7 +253,7 @@
             background: var(--surface);  
             border: 2px solid var(--border-2);  
             border-radius: var(--radius);  
-            padding: 16px;  
+            padding: 18px 16px;  
             display: flex;  
             justify-content: space-between;  
             align-items: center;  
@@ -279,26 +269,23 @@
         .card-meta-left {  
             display: flex;  
             flex-direction: column;  
-            gap: 3px;  
+            gap: 4px;  
             min-width: 0;  
             flex: 1;  
+            padding-right: 12px;  
         }  
 
         .card-main-title {  
-            font-size: 16px;  
+            font-size: 15px;  
             font-weight: 600;  
             color: var(--text);  
             line-height: 1.3;  
-            display: -webkit-box;  
-            -webkit-line-clamp: 2;  
-            -webkit-box-orient: vertical;  
-            overflow: hidden;  
-            white-space: normal;  
         }  
 
         .card-sub-label {  
-            font-size: 13px;  
+            font-size: 12px;  
             color: var(--text-3);  
+            line-height: 1.3;  
         }  
 
         .card-metric-right {  
@@ -306,19 +293,20 @@
             flex-direction: column;  
             align-items: flex-end;  
             gap: 4px;  
-            padding-left: 12px;  
             flex-shrink: 0;  
+            text-align: right;  
+            min-width: 135px; /* Ensures balanced, symmetrical sizing across sibling elements */  
         }  
 
         .tier-status-wrapper {  
             display: flex;  
             align-items: center;  
-            gap: 8px;  
+            gap: 6px;  
         }  
 
         .turnout-status-icon {  
-            width: 12px;  
-            height: 12px;  
+            width: 10px;  
+            height: 10px;  
             border-radius: 50%;  
             display: inline-block;  
             flex-shrink: 0;  
@@ -329,20 +317,20 @@
         .icon-pending  { background: var(--muted); }  
 
         .tier-title {  
-            font-size: 12px;  
+            font-size: 11px;  
             font-weight: 700;  
             text-transform: uppercase;  
-            letter-spacing: 0.05em;  
+            letter-spacing: 0.03em;  
         }  
 
         .tier-value {  
-            font-size: 13px;  
-            color: var(--text-2);  
+            font-size: 12px;  
+            color: var(--text-3);  
             font-weight: 500;  
         }  
 
         .tier-value span {  
-            font-size: 18px;  
+            font-size: 16px;  
             font-weight: 700;  
             color: var(--text);  
         }  
@@ -352,26 +340,16 @@
         .tier-optimal .tier-title { color: var(--green); }  
         .tier-pending .tier-title { color: var(--text-3); }  
         
-        /* 📱 Responsive Mobile Layout Adjustments */  
+        /* Fixed mobile media layout parameters to maintain matrix grid balance */  
         @media (max-width: 480px) {  
             .portal-card {  
-                flex-direction: column;  
-                align-items: flex-start;  
-                gap: 12px;  
+                padding: 16px 14px;  
             }  
-            
-            .card-meta-left {  
-                width: 100%;  
-            }  
-            
-            .card-metric-right {  
-                width: 100%;  
-                padding-left: 0;  
-                align-items: flex-start;  
-                border-top: 1px solid var(--border);  
-                padding-top: 10px;  
-                margin-top: 4px;  
-            }  
+            .card-main-title { font-size: 14px; }  
+            .card-metric-right { min-width: 125px; }  
+            .tier-title { font-size: 10px; }  
+            .tier-value { font-size: 11px; }  
+            .tier-value span { font-size: 14px; }  
         }  
     </style>  
 </head>  
@@ -410,50 +388,50 @@
         };  
 
         let activeShowId = null;  
-        let isDataLoaded = false; // Flag to track when data arrives
+        let apiDataCache = null;  
 
         window.addEventListener("DOMContentLoaded", () => {  
             if (PORTAL_CONFIG.googleSheetApiUrl === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {  
-                console.error("Configuration incomplete: Please specify your Google Web App link.");  
                 return;  
             }  
 
-            // 🎯 FIX: Fire loading animation immediately so it doesn't freeze at 0%
-            simulateLoading("initial", null, () => {
-                // If data has already finished fetching by the time animation hits 100%, run setup
-                if (isDataLoaded) {
-                    populateShows();
-                }
+            // Fire structural animation routine instantly
+            simulateLoading("initial", null, () => {  
+                // When visual loop reaches 100%, check if the dataset landed safely
+                if (apiDataCache) {  
+                    processIncomingData(apiDataCache);  
+                }  
             });  
 
             fetch(PORTAL_CONFIG.googleSheetApiUrl, {  
                 method: "GET",  
-                headers: {  
-                    "Content-Type": "text/plain;charset=utf-8"  
-                }  
+                headers: { "Content-Type": "text/plain;charset=utf-8" }  
             })  
             .then(response => {  
-                if (!response.ok) throw new Error('Network response was not ok');  
+                if (!response.ok) throw new Error('Network failure');  
                 return response.json();  
             })  
             .then(liveFeedData => {  
-                PORTAL_CONFIG.showsDataManifest = liveFeedData.shows || [];  
-                PORTAL_CONFIG.dancersDemographicsRoster = liveFeedData.roster || {};  
-                isDataLoaded = true;
-                
-                // If animation completed fast or was already running, render data
-                populateShows();  
+                apiDataCache = liveFeedData;  
+                // Inject structural data instantly to run background setups without delay
+                processIncomingData(liveFeedData);  
             })  
             .catch(error => {  
                 console.error("Database connection failure:", error);  
-                const statusEl = document.getElementById("lsStatus");
-                if (statusEl) statusEl.textContent = "Connection Error. Please check your network connection.";  
+                const errStatus = document.getElementById("lsStatus");  
+                if (errStatus) errStatus.textContent = "Connection Error. Please reload.";  
             });  
         });  
 
+        function processIncomingData(data) {  
+            PORTAL_CONFIG.showsDataManifest = data.shows || [];  
+            PORTAL_CONFIG.dancersDemographicsRoster = data.roster || {};  
+            populateShows();  
+        }  
+
         function populateShows() {  
             const container = document.getElementById("showSelectionContainer");  
-            if (!container || !PORTAL_CONFIG.showsDataManifest || PORTAL_CONFIG.showsDataManifest.length === 0) return;  
+            if (!container || !PORTAL_CONFIG.showsDataManifest.length) return;  
 
             container.innerHTML = PORTAL_CONFIG.showsDataManifest.map(show =>   
                 `<a href="javascript:void(0);" onclick="handleShowSelection('${show.id}')" class="show-card">  
@@ -493,17 +471,17 @@
             const hype = document.getElementById("lsHype");  
             const status = document.getElementById("lsStatus");  
 
-            if (!screen || !bar || !pct) return;
+            if (!screen || !bar || !pct) return;  
 
             screen.classList.remove("fade-out", "hidden");  
             bar.style.width = "0%";  
             pct.textContent = "0%";  
 
             let p = 0;  
-            let intervalSpeed = (type === "initial") ? 30 : 12;  
+            let intervalSpeed = (type === "initial") ? 20 : 10;  
 
             let timer = setInterval(() => {  
-                p += (type === "initial") ? Math.floor(Math.random() * 5) + 2 : Math.floor(Math.random() * 15) + 8;  
+                p += (type === "initial") ? Math.floor(Math.random() * 6) + 3 : Math.floor(Math.random() * 15) + 10;  
                   
                 if (p >= 100) {  
                     p = 100;  
@@ -511,17 +489,6 @@
                     bar.style.width = "100%";  
                     pct.textContent = "100%";  
                       
-                    if (type === "initial") {  
-                        if (hype) hype.textContent = "MAPPING THEATER SEATING...";  
-                        if (status) status.textContent = "Seating arrangements configured.";  
-                    } else if (type === "showChange") {  
-                        if (hype) hype.textContent = "LOADING DANCE SCHOOLS...";  
-                        if (status) status.textContent = "School data loaded.";  
-                    } else {  
-                        if (hype) hype.textContent = "OPENING TICKET PORTAL...";  
-                        if (status) status.textContent = "Secure checkout ready.";  
-                    }  
-
                     if (completedCallback) completedCallback();  
                       
                     if (type === "jotformRedirect" && absoluteUrl) {  
@@ -529,35 +496,16 @@
                     } else {  
                         setTimeout(() => {  
                             screen.classList.add("fade-out");  
-                            setTimeout(() => {  
-                                screen.classList.add("hidden");  
-                            }, 400);  
-                        }, 200);  
+                            setTimeout(() => { screen.classList.add("hidden"); }, 400);  
+                        }, 150);  
                     }  
                 } else {  
                     bar.style.width = p + "%";  
                     pct.textContent = p + "%";  
-
-                    if (type === "initial") {  
-                        if (p < 25) {  
-                            if (hype) hype.textContent = "LOADING BOX OFFICE...";  
-                            if (status) status.textContent = "Opening channels...";  
-                        } else if (p < 50) {  
-                            if (hype) hype.textContent = "TURNING ON THE POPCORN MACHINE...";  
-                            if (status) status.textContent = "Heating up elements...";  
-                        } else if (p < 75) {  
-                            if (hype) hype.textContent = "TESTING THE SPOTLIGHT...";  
-                            if (status) status.textContent = "Calibrating stage frames...";  
-                        } else {  
-                            if (hype) hype.textContent = "MAPPING THEATER SEATING...";  
-                            if (status) status.textContent = "Calculating seat distributions...";  
-                        }  
-                    } else if (type === "showChange") {  
-                        if (hype) hype.textContent = "LOADING DANCE SCHOOLS...";  
-                        if (status) status.textContent = "Swapping performance rosters...";  
-                    } else {  
-                        if (hype) hype.textContent = "OPENING TICKET PORTAL...";  
-                        if (status) status.textContent = "Forwarding safely to checkout secure lines...";  
+                    if (type === "initial" && hype && status) {  
+                        if (p < 35) { hype.textContent = "LOADING BOX OFFICE..."; status.textContent = "Opening secure channels..."; }  
+                        else if (p < 70) { hype.textContent = "CALIBRATING PLATFORM..."; status.textContent = "Mapping active theater sheets..."; }  
+                        else { hype.textContent = "READYING SYSTEM..."; status.textContent = "Finalizing data manifest locks..."; }  
                     }  
                 }  
             }, intervalSpeed);  
@@ -568,33 +516,35 @@
             const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === selectedShowId);  
             const container = document.getElementById("leaderboardContainer");  
 
-            if (!showData || !container || !showData.schools) return;  
+            if (!showData || !container) return;  
 
             const cardsData = Object.keys(showData.schools).map(schoolName => {  
                 const sold = Number(showData.schools[schoolName]) || 0;  
-                const dancers = Number(PORTAL_CONFIG.dancersDemographicsRoster[schoolName]) || 1;  
-                const ratio = sold / dancers;  
+                const dancers = Number(PORTAL_CONFIG.dancersDemographicsRoster[schoolName]) || 0;  
+                
+                // MATH CALCULATIONS OVERRIDE
+                const ratio = dancers > 0 ? (sold / dancers) : 0;  
 
                 let tierClass = "";  
                 let iconClass = "";  
                 let statusLabel = "";  
 
-                if (sold < PORTAL_CONFIG.minSalesThreshold) {  
+                if (sold === 0) {  
                     tierClass = "tier-pending";  
                     iconClass = "icon-pending";  
-                    statusLabel = "Ticket Sales Open";  
+                    statusLabel = "Sales Open";  
                 } else if (ratio < 1.0) {  
                     tierClass = "tier-critical";  
                     iconClass = "icon-critical";  
                     statusLabel = "Low Turnout";  
-                } else if (ratio >= 1.0 && ratio < 1.5) {  
+                } else if (ratio < 1.5) {  
                     tierClass = "tier-warning";  
                     iconClass = "icon-warning";  
                     statusLabel = "Good Turnout";  
                 } else {  
                     tierClass = "tier-optimal";  
                     iconClass = "icon-optimal";  
-                    statusLabel = "Excellent Turnout";  
+                    statusLabel = "Excellent";  
                 }  
 
                 return {  
@@ -613,16 +563,19 @@
                 const queryDestinationUrl = `${PORTAL_CONFIG.jotformBaseUrl}?show=${targetShowParam}&school=${targetSchoolParam}`;  
                   
                 const sublabelText = (item.sold === 0)   
-                    ? `Be the first to secure tickets for this school! →`  
+                    ? `Be the first to secure tickets! →`  
                     : `Click to buy tickets for this school →`;  
 
-                const metricBoxHtml = (item.sold === 0) ? '' : `  
+                const accentStyle = (item.sold === 0) ? 'color: var(--accent); font-weight: 500;' : 'color: var(--text-3); font-weight: 400;';
+
+                // Balanced structural right block present for ALL elements to lock structural grid symmetry
+                const metricBoxHtml = `  
                     <div class="card-metric-right ${item.tierClass}">  
                         <div class="tier-status-wrapper">  
-                            🎟️ <span class="turnout-status-icon ${item.iconClass}"></span>  
+                            <span class="turnout-status-icon ${item.iconClass}"></span>  
                             <div class="tier-title">${item.statusText}</div>  
                         </div>  
-                        <div class="tier-value"><span>${item.ratio.toFixed(1)}</span> Seats / Dancer</div>  
+                        <div class="tier-value"><span>${item.ratio.toFixed(1)}</span> Ratio</div>  
                     </div>  
                 `;  
 
@@ -630,7 +583,7 @@
                     <a href="javascript:void(0);" onclick="routeToBooking('${queryDestinationUrl}')" class="portal-card">  
                         <div class="card-meta-left">  
                             <div class="card-main-title">${item.name}</div>  
-                            <div class="card-sub-label" style="color: ${item.sold === 0 ? 'var(--accent)' : 'var(--text-3)'}; font-weight: ${item.sold === 0 ? '500' : '400'};">${sublabelText}</div>  
+                            <div class="card-sub-label" style="${accentStyle}">${sublabelText}</div>  
                         </div>  
                         ${metricBoxHtml}  
                     </a>  
