@@ -176,8 +176,9 @@
             margin-bottom: 8px;
         }
 
-        /* Target exact Jotform header styles */
+        /* 🔤 MATCH JOTFORM WIZARD TYPOGRAPHY */
         .portal-gold-header {
+            font-family: Arial, sans-serif;
             font-size: 12pt;
             font-weight: 700;
             color: var(--accent);
@@ -185,6 +186,7 @@
         }
 
         .portal-white-subheader {
+            font-family: Arial, sans-serif;
             font-size: 12pt;
             font-weight: 400;
             color: var(--text);
@@ -441,7 +443,7 @@
             simulateLoading("showChange", null, () => {
                 document.getElementById("showSelectionContainer").style.display = "none";
                 
-                // Set State 2 header layout styling to match Jotform wizard parameters perfectly
+                // State 2 header layout text
                 document.getElementById("dynamicHeaderContainer").innerHTML = `
                     <div class="portal-gold-header" style="margin-bottom: 2px;">Select the school you're coming to support...</div>
                     <div class="portal-white-subheader">You're coming to: ${showData.name}</div>
@@ -492,16 +494,19 @@
 
                     if (completedCallback) completedCallback();
                     
-                    setTimeout(() => {
-                        screen.classList.add("fade-out");
+                    // 🧠 LOADING ELIMINATION LOGIC:
+                    // If it's a redirect step, pass the URL forward immediately. 
+                    // Do NOT execute the fade-out timers. Keep screen up to block any back-end list flicker.
+                    if (type === "jotformRedirect" && absoluteUrl) {
+                        window.location.href = absoluteUrl;
+                    } else {
                         setTimeout(() => {
-                            screen.classList.add("hidden");
-                            
-                            if (type === "jotformRedirect" && absoluteUrl) {
-                                window.location.href = absoluteUrl;
-                            }
-                        }, 400);
-                    }, 200);
+                            screen.classList.add("fade-out");
+                            setTimeout(() => {
+                                screen.classList.add("hidden");
+                            }, 400);
+                        }, 200);
+                    }
                 } else {
                     bar.style.width = p + "%";
                     pct.textContent = p + "%";
