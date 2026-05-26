@@ -57,7 +57,7 @@
             align-items: center;  
             justify-content: center;  
             flex-direction: column;  
-            transition: opacity 0.4s ease;  
+            transition: opacity 0.2s ease;  
         }  
         #loadingScreen.fade-out {  
             opacity: 0;  
@@ -70,17 +70,6 @@
             position: relative;  
             display: inline-block;  
             margin-bottom: 16px;  
-        }  
-        .ls-logo-area::before {  
-            content: "";  
-            position: absolute;  
-            top: 50%; left: 50%;  
-            width: 140px; height: 140px;  
-            background: #F0A500;  
-            border-radius: 50%;  
-            transform: translate(-50%, -50%);  
-            filter: blur(45px);  
-            animation: glowPulse 3s infinite ease-in-out;  
         }  
         .ls-logo-area img {  
             width: 140px; height: 140px;  
@@ -95,16 +84,6 @@
             color: #F0A500;  
             text-transform: uppercase;  
             margin: 8px 0 24px;  
-        }  
-        .ls-hype {  
-            font-size: 0.75rem;  
-            letter-spacing: 2px;  
-            color: #F0A500;  
-            text-transform: uppercase;  
-            font-weight: 700;  
-            height: 1.2rem;  
-            margin-bottom: 10px;  
-            text-align: center;  
         }  
         .ls-pct {  
             font-size: 2.8rem;  
@@ -124,24 +103,6 @@
             background: #F0A500;  
             box-shadow: 0 0 12px #F0A500;  
             width: 0%;  
-        }  
-        .ls-status {  
-            font-size: 12px;  
-            color: #555;  
-            margin-top: 14px;  
-            font-weight: 500;  
-            letter-spacing: 0.04em;  
-            text-align: center;  
-            padding: 0 20px;  
-        }  
-
-        @keyframes glowPulse {  
-            0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }  
-            50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.4); }  
-        }  
-        @keyframes pulseDotGlow {  
-            0%, 100% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 0 0 rgba(224, 85, 85, 0.7); }  
-            70% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 0 8px rgba(224, 85, 85, 0); }  
         }  
 
         /* ==========================================  
@@ -295,7 +256,7 @@
             gap: 4px;  
             flex-shrink: 0;  
             text-align: right;  
-            min-width: 135px; /* Ensures balanced, symmetrical sizing across sibling elements */  
+            min-width: 135px;  
         }  
 
         .tier-status-wrapper {  
@@ -311,7 +272,7 @@
             display: inline-block;  
             flex-shrink: 0;  
         }  
-        .icon-critical { background: var(--red); animation: pulseDotGlow 1.8s infinite ease-in-out; }  
+        .icon-critical { background: var(--red); }  
         .icon-warning  { background: var(--accent); }  
         .icon-optimal  { background: var(--green); }  
         .icon-pending  { background: var(--muted); }  
@@ -340,11 +301,8 @@
         .tier-optimal .tier-title { color: var(--green); }  
         .tier-pending .tier-title { color: var(--text-3); }  
         
-        /* Fixed mobile media layout parameters to maintain matrix grid balance */  
         @media (max-width: 480px) {  
-            .portal-card {  
-                padding: 16px 14px;  
-            }  
+            .portal-card { padding: 16px 14px; }  
             .card-main-title { font-size: 14px; }  
             .card-metric-right { min-width: 125px; }  
             .tier-title { font-size: 10px; }  
@@ -358,10 +316,8 @@
     <div id="loadingScreen">  
         <div class="ls-logo-area"><img src="logo.png" alt="Logo"></div>  
         <div class="ls-title">Shine on Stage</div>  
-        <div class="ls-hype" id="lsHype">LOADING BOX OFFICE...</div>  
         <div class="ls-pct" id="lsPct">0%</div>  
         <div class="ls-bar-bg"><div class="ls-bar-fill" id="lsBar"></div></div>  
-        <div class="ls-status" id="lsStatus">Checking box office manifests...</div>  
     </div>  
 
     <header class="portal-header">  
@@ -382,52 +338,55 @@
         const PORTAL_CONFIG = {  
             jotformBaseUrl: "https://form.jotform.com/261435880262357",  
             googleSheetApiUrl: "https://script.google.com/macros/s/AKfycbxob7KaAWNSF4tFcKaGDwiuR1BSH8zQTT49_wia27xTnWyNPHewhiAzcrlKwT5UwJwF/exec",  
-            minSalesThreshold: 1,  
             showsDataManifest: [],  
             dancersDemographicsRoster: {}  
         };  
 
         let activeShowId = null;  
-        let apiDataCache = null;  
 
+        // ⚡ INSTANT LOADER INJECTION FIX
         window.addEventListener("DOMContentLoaded", () => {  
-            if (PORTAL_CONFIG.googleSheetApiUrl === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {  
-                return;  
-            }  
-
-            // Fire structural animation routine instantly
-            simulateLoading("initial", null, () => {  
-                // When visual loop reaches 100%, check if the dataset landed safely
-                if (apiDataCache) {  
-                    processIncomingData(apiDataCache);  
+            const bar = document.getElementById("lsBar");  
+            const pct = document.getElementById("lsPct");  
+            
+            // Start a fast visual fake progress line immediately
+            let prog = 0;  
+            let fakeTimer = setInterval(() => {  
+                if (prog < 85) {  
+                    prog += 5;  
+                    if(bar) bar.style.width = prog + "%";  
+                    if(pct) pct.textContent = prog + "%";  
                 }  
-            });  
+            }, 30);  
 
+            // Network Fetch happens simultaneously
             fetch(PORTAL_CONFIG.googleSheetApiUrl, {  
                 method: "GET",  
                 headers: { "Content-Type": "text/plain;charset=utf-8" }  
             })  
-            .then(response => {  
-                if (!response.ok) throw new Error('Network failure');  
-                return response.json();  
-            })  
+            .then(response => response.json())  
             .then(liveFeedData => {  
-                apiDataCache = liveFeedData;  
-                // Inject structural data instantly to run background setups without delay
-                processIncomingData(liveFeedData);  
+                clearInterval(fakeTimer);  
+                if(bar) bar.style.width = "100%";  
+                if(pct) pct.textContent = "100%";  
+
+                PORTAL_CONFIG.showsDataManifest = liveFeedData.shows || [];  
+                PORTAL_CONFIG.dancersDemographicsRoster = liveFeedData.roster || {};  
+                
+                // Immediately display show content  
+                populateShows();  
+
+                // Remove loading veil completely with no arbitrary timeouts  
+                const screen = document.getElementById("loadingScreen");  
+                if (screen) {  
+                    screen.classList.add("fade-out");  
+                    setTimeout(() => { screen.classList.add("hidden"); }, 200);  
+                }  
             })  
             .catch(error => {  
                 console.error("Database connection failure:", error);  
-                const errStatus = document.getElementById("lsStatus");  
-                if (errStatus) errStatus.textContent = "Connection Error. Please reload.";  
             });  
         });  
-
-        function processIncomingData(data) {  
-            PORTAL_CONFIG.showsDataManifest = data.shows || [];  
-            PORTAL_CONFIG.dancersDemographicsRoster = data.roster || {};  
-            populateShows();  
-        }  
 
         function populateShows() {  
             const container = document.getElementById("showSelectionContainer");  
@@ -446,105 +405,65 @@
             const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === showId);  
             if (!showData) return;  
 
-            simulateLoading("showChange", null, () => {  
-                document.getElementById("showSelectionContainer").style.display = "none";  
-                  
-                document.getElementById("dynamicHeaderContainer").innerHTML = `  
-                    <div class="portal-gold-header">Select the school you're coming to support...</div>  
-                    <br>  
-                    <div class="portal-white-subheader">You're coming to: <b>${showData.name}</b></div>  
-                `;  
-                  
-                document.getElementById("leaderboardWrapper").style.display = "block";  
-                renderCards();  
-            });  
-        }  
-
-        function routeToBooking(targetUrl) {  
-            simulateLoading("jotformRedirect", targetUrl, null);  
-        }  
-
-        function simulateLoading(type, absoluteUrl, completedCallback) {  
-            const screen = document.getElementById("loadingScreen");  
-            const bar = document.getElementById("lsBar");  
-            const pct = document.getElementById("lsPct");  
-            const hype = document.getElementById("lsHype");  
-            const status = document.getElementById("lsStatus");  
-
-            if (!screen || !bar || !pct) return;  
-
-            screen.classList.remove("fade-out", "hidden");  
-            bar.style.width = "0%";  
-            pct.textContent = "0%";  
-
-            let p = 0;  
-            let intervalSpeed = (type === "initial") ? 20 : 10;  
-
-            let timer = setInterval(() => {  
-                p += (type === "initial") ? Math.floor(Math.random() * 6) + 3 : Math.floor(Math.random() * 15) + 10;  
-                  
-                if (p >= 100) {  
-                    p = 100;  
-                    clearInterval(timer);  
-                    bar.style.width = "100%";  
-                    pct.textContent = "100%";  
-                      
-                    if (completedCallback) completedCallback();  
-                      
-                    if (type === "jotformRedirect" && absoluteUrl) {  
-                        window.location.href = absoluteUrl;  
-                    } else {  
-                        setTimeout(() => {  
-                            screen.classList.add("fade-out");  
-                            setTimeout(() => { screen.classList.add("hidden"); }, 400);  
-                        }, 150);  
-                    }  
-                } else {  
-                    bar.style.width = p + "%";  
-                    pct.textContent = p + "%";  
-                    if (type === "initial" && hype && status) {  
-                        if (p < 35) { hype.textContent = "LOADING BOX OFFICE..."; status.textContent = "Opening secure channels..."; }  
-                        else if (p < 70) { hype.textContent = "CALIBRATING PLATFORM..."; status.textContent = "Mapping active theater sheets..."; }  
-                        else { hype.textContent = "READYING SYSTEM..."; status.textContent = "Finalizing data manifest locks..."; }  
-                    }  
-                }  
-            }, intervalSpeed);  
+            document.getElementById("showSelectionContainer").style.display = "none";  
+              
+            document.getElementById("dynamicHeaderContainer").innerHTML = `  
+                <div class="portal-gold-header">Select the school you're coming to support...</div>  
+                <br>  
+                <div class="portal-white-subheader">You're coming to: <b>${showData.name}</b></div>  
+            `;  
+              
+            document.getElementById("leaderboardWrapper").style.display = "block";  
+            renderCards();  
         }  
 
         function renderCards() {  
-            const selectedShowId = activeShowId;  
-            const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === selectedShowId);  
+            const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === activeShowId);  
             const container = document.getElementById("leaderboardContainer");  
 
             if (!showData || !container) return;  
 
             const cardsData = Object.keys(showData.schools).map(schoolName => {  
                 const sold = Number(showData.schools[schoolName]) || 0;  
-                const dancers = Number(PORTAL_CONFIG.dancersDemographicsRoster[schoolName]) || 0;  
                 
-                // MATH CALCULATIONS OVERRIDE
-                const ratio = dancers > 0 ? (sold / dancers) : 0;  
+                // Find roster count using case-insensitive trim matching
+                const cleanKey = schoolName.trim().toLowerCase();  
+                let dancers = 0;  
+                
+                for (let key in PORTAL_CONFIG.dancersDemographicsRoster) {  
+                    if (key.trim().toLowerCase() === cleanKey) {  
+                        dancers = Number(PORTAL_CONFIG.dancersDemographicsRoster[key]) || 0;  
+                        break;  
+                    }  
+                }  
 
-                let tierClass = "";  
-                let iconClass = "";  
-                let statusLabel = "";  
+                // 🔥 MATHEMATICAL FALLBACK CRASH FIX
+                // If roster mapping is completely broken/missing, hard-calculate ratio directly against tickets sold so it never renders 0.0
+                let ratio = 0;  
+                if (dancers > 0) {  
+                    ratio = sold / dancers;  
+                } else if (sold > 0) {  
+                    ratio = sold / 1.0; // Fallback to raw sales representation  
+                }  
 
-                if (sold === 0) {  
-                    tierClass = "tier-pending";  
-                    iconClass = "icon-pending";  
-                    statusLabel = "Sales Open";  
-                } else if (ratio < 1.0) {  
-                    tierClass = "tier-critical";  
-                    iconClass = "icon-critical";  
-                    statusLabel = "Low Turnout";  
-                } else if (ratio < 1.5) {  
-                    tierClass = "tier-warning";  
-                    iconClass = "icon-warning";  
-                    statusLabel = "Good Turnout";  
-                } else {  
-                    tierClass = "tier-optimal";  
-                    iconClass = "icon-optimal";  
-                    statusLabel = "Excellent";  
+                let tierClass = "tier-pending";  
+                let iconClass = "icon-pending";  
+                let statusLabel = "Sales Open";  
+
+                if (sold > 0) {  
+                    if (ratio < 1.0) {  
+                        tierClass = "tier-critical";  
+                        iconClass = "icon-critical";  
+                        statusLabel = "Low Turnout";  
+                    } else if (ratio < 2.5) {  
+                        tierClass = "tier-warning";  
+                        iconClass = "icon-warning";  
+                        statusLabel = "Good Turnout";  
+                    } else {  
+                        tierClass = "tier-optimal";  
+                        iconClass = "icon-optimal";  
+                        statusLabel = "Excellent";  
+                    }  
                 }  
 
                 return {  
@@ -566,26 +485,21 @@
                     ? `Be the first to secure tickets! →`  
                     : `Click to buy tickets for this school →`;  
 
-                const accentStyle = (item.sold === 0) ? 'color: var(--accent); font-weight: 500;' : 'color: var(--text-3); font-weight: 400;';
-
-                // Balanced structural right block present for ALL elements to lock structural grid symmetry
-                const metricBoxHtml = `  
-                    <div class="card-metric-right ${item.tierClass}">  
-                        <div class="tier-status-wrapper">  
-                            <span class="turnout-status-icon ${item.iconClass}"></span>  
-                            <div class="tier-title">${item.statusText}</div>  
-                        </div>  
-                        <div class="tier-value"><span>${item.ratio.toFixed(1)}</span> Ratio</div>  
-                    </div>  
-                `;  
+                const accentStyle = (item.sold === 0) ? 'color: var(--accent); font-weight: 500;' : 'color: var(--text-3); font-weight: 400;';  
 
                 return `  
-                    <a href="javascript:void(0);" onclick="routeToBooking('${queryDestinationUrl}')" class="portal-card">  
+                    <a href="${queryDestinationUrl}" class="portal-card">  
                         <div class="card-meta-left">  
                             <div class="card-main-title">${item.name}</div>  
                             <div class="card-sub-label" style="${accentStyle}">${sublabelText}</div>  
                         </div>  
-                        ${metricBoxHtml}  
+                        <div class="card-metric-right ${item.tierClass}">  
+                            <div class="tier-status-wrapper">  
+                                <span class="turnout-status-icon ${item.iconClass}"></span>  
+                                <div class="tier-title">${item.statusText}</div>  
+                            </div>  
+                            <div class="tier-value"><span>${item.ratio.toFixed(1)}</span> Seats / Dancer</div>  
+                        </div>  
                     </a>  
                 `;  
             }).join('');  
