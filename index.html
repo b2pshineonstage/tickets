@@ -287,14 +287,19 @@
             flex: 1;
         }
 
-        .card-main-title {
-            font-size: 17px;
-            font-weight: 600;
-            color: var(--text);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+     .card-main-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    
+    /* ✂️ Activates modern multi-line clamping */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: normal;
+}
 
         .card-sub-label {
             font-size: 13px;
