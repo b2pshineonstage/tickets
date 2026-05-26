@@ -465,7 +465,7 @@
         }
 
         /**
-         * ⏳ VARIABLE LOADING ENGINE
+         * ⏳ VARIABLE LOADING ENGINE (Fixed Transition Sequence)
          */
         function simulateLoading(type, absoluteUrl, completedCallback) {
             const screen = document.getElementById("loadingScreen");
@@ -502,12 +502,13 @@
                     }
                     
                     setTimeout(() => {
+                        // 🧠 CRITICAL FIX: Swap the page content behind the scenes while screen is still 100% visible
+                        if (completedCallback) completedCallback();
+
                         screen.classList.add("fade-out");
                         setTimeout(() => {
                             screen.classList.add("hidden");
                             
-                            // Execute callback loops cleanly without shifting contexts
-                            if (completedCallback) completedCallback();
                             if (type === "jotformRedirect" && absoluteUrl) {
                                 window.location.href = absoluteUrl;
                             }
@@ -541,7 +542,6 @@
                 }
             }, intervalSpeed);
         }
-
         function renderCards() {
             const selectedShowId = activeShowId;
             const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === selectedShowId);
