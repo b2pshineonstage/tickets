@@ -367,10 +367,8 @@
         <p class="portal-sub-headline" id="portalSubHeadline">Step 1: Choose your performance to begin booking tickets</p>
     </header>
 
-    <!-- STATE 1: Dynamic Show Card Landing Grid Wrapper -->
     <main class="landing-cards-wrapper" id="showSelectionContainer"></main>
 
-    <!-- STATE 2: School Selection Wrapper (Hidden on Initialization) -->
     <div id="leaderboardWrapper" style="display: none;">
         <section class="leaderboard-section-title">Step 2: Select Your Dance School</section>
         <section class="leaderboard-cards-wrapper" id="leaderboardContainer"></section>
@@ -465,7 +463,7 @@
         }
 
         /**
-         * ⏳ VARIABLE LOADING ENGINE (Fixed Transition Sequence)
+         * ⏳ VARIABLE LOADING ENGINE
          */
         function simulateLoading(type, absoluteUrl, completedCallback) {
             const screen = document.getElementById("loadingScreen");
@@ -500,11 +498,12 @@
                         hype.textContent = "OPENING TICKET PORTAL...";
                         status.textContent = "Secure checkout ready.";
                     }
+
+                    // 🧠 THE FLICKER RESOLUTION: Run content updates immediately when bar hits 100% 
+                    // while the loading screen is still fully black and completely covering the background.
+                    if (completedCallback) completedCallback();
                     
                     setTimeout(() => {
-                        // 🧠 CRITICAL FIX: Swap the page content behind the scenes while screen is still 100% visible
-                        if (completedCallback) completedCallback();
-
                         screen.classList.add("fade-out");
                         setTimeout(() => {
                             screen.classList.add("hidden");
@@ -542,6 +541,7 @@
                 }
             }, intervalSpeed);
         }
+
         function renderCards() {
             const selectedShowId = activeShowId;
             const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === selectedShowId);
