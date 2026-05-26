@@ -148,10 +148,10 @@
         }
 
         /* ==========================================
-           📱 PORTAL UI MAIN LAYOUT
+           📱 PORTAL UI MAIN LAYOUT & WIZARD TYPOGRAPHY
            ========================================== */
         .portal-header {
-            padding: 24px 16px;
+            padding: 24px 16px 12px;
             text-align: center;
             background: linear-gradient(to bottom, rgba(17,18,23,0.8), transparent);
             border-bottom: 1px solid var(--border);
@@ -173,12 +173,21 @@
             font-size: 24px;
             font-weight: 700;
             letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+
+        /* Target exact Jotform header styles */
+        .portal-gold-header {
+            font-size: 12pt;
+            font-weight: 700;
+            color: var(--accent);
             margin-bottom: 4px;
         }
 
-        .portal-sub-headline {
-            font-size: 14px;
-            color: var(--text-3);
+        .portal-white-subheader {
+            font-size: 12pt;
+            font-weight: 400;
+            color: var(--text);
         }
 
         /* Grid wrapper for show cards */
@@ -234,20 +243,8 @@
         /* ==========================================
            🏆 CARD MATRIX LAYOUT
            ========================================== */
-        .leaderboard-section-title {
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--accent);
-            padding: 16px 16px 8px;
-            max-width: 600px;
-            width: 100%;
-            margin: 0 auto;
-        }
-
         .leaderboard-cards-wrapper {
-            padding: 0 16px 40px;
+            padding: 24px 16px 40px;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -311,7 +308,6 @@
             gap: 8px;
         }
 
-        /* Larger High-Fidelity Glow Icons */
         .turnout-status-icon {
             width: 12px;
             height: 12px;
@@ -343,7 +339,6 @@
             color: var(--text);
         }
 
-        /* Dynamic Theme Text Colors */
         .tier-critical .tier-title { color: var(--red); }
         .tier-warning .tier-title { color: var(--accent); }
         .tier-optimal .tier-title { color: var(--green); }
@@ -364,13 +359,14 @@
     <header class="portal-header">
         <div class="portal-logo-container"><img src="logo.png" alt="Logo"></div>
         <h1 class="portal-headline">Ticket Booking Portal</h1>
-        <p class="portal-sub-headline" id="portalSubHeadline">Step 1: Choose your performance to begin booking tickets</p>
+        <div id="dynamicHeaderContainer">
+            <div class="portal-gold-header">Select your performance</div>
+        </div>
     </header>
 
     <main class="landing-cards-wrapper" id="showSelectionContainer"></main>
 
     <div id="leaderboardWrapper" style="display: none;">
-        <section class="leaderboard-section-title">Step 2: Select Your Dance School</section>
         <section class="leaderboard-cards-wrapper" id="leaderboardContainer"></section>
     </div>
 
@@ -387,9 +383,9 @@
                     id: "show-001",
                     name: "Friday Night Live Showcase — 10th July 2026",
                     schools: {
-                        "Stardance Academy": 3,   // Under threshold -> Pending
-                        "Elite Moves": 22,        // Evaluation active
-                        "Grace School of Dance": 35 // Evaluation active
+                        "Stardance Academy": 3,
+                        "Elite Moves": 22,
+                        "Grace School of Dance": 35
                     }
                 },
                 {
@@ -397,7 +393,7 @@
                     name: "Saturday Matinee Spectacular — 11th July 2026",
                     schools: {
                         "Stardance Academy": 25,
-                        "Velocity Dance": 4,      // Under threshold -> Pending
+                        "Velocity Dance": 4,
                         "Aspire Stage School": 19
                     }
                 },
@@ -405,7 +401,7 @@
                     id: "show-003",
                     name: "Sunday Grand Finale — 12th July 2026",
                     schools: {
-                        "Elite Moves": 5,         // Under threshold -> Pending
+                        "Elite Moves": 5,
                         "Velocity Dance": 18,
                         "Aspire Stage School": 40
                     }
@@ -420,17 +416,13 @@
             }
         };
 
-        // Track global state of selected show cleanly
         let activeShowId = null;
 
         window.addEventListener("DOMContentLoaded", () => {
             populateShows();
-            simulateLoading("initial", null, () => {
-                // Keep selector hidden on initial landing load
-            });
+            simulateLoading("initial", null, () => {});
         });
 
-        // Generates the selection landing card matrix
         function populateShows() {
             const container = document.getElementById("showSelectionContainer");
             container.innerHTML = PORTAL_CONFIG.showsDataManifest.map(show => 
@@ -441,30 +433,29 @@
             ).join('');
         }
 
-        // State Machine Switchboard Event Handler
         function handleShowSelection(showId) {
             activeShowId = showId;
             const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === showId);
             if (!showData) return;
 
             simulateLoading("showChange", null, () => {
-                // Swap Interface view containers
                 document.getElementById("showSelectionContainer").style.display = "none";
-                document.getElementById("portalSubHeadline").innerHTML = `Selected Performance: <strong style="color: var(--accent);">${showData.name}</strong>`;
-                document.getElementById("leaderboardWrapper").style.display = "block";
                 
+                // Set State 2 header layout styling to match Jotform wizard parameters perfectly
+                document.getElementById("dynamicHeaderContainer").innerHTML = `
+                    <div class="portal-gold-header" style="margin-bottom: 2px;">Select the school you're coming to support...</div>
+                    <div class="portal-white-subheader">You're coming to: ${showData.name}</div>
+                `;
+                
+                document.getElementById("leaderboardWrapper").style.display = "block";
                 renderCards();
             });
         }
 
-        // 🔗 Fixed Routing Handler: Passes target data parameters safely forward
         function routeToBooking(targetUrl) {
             simulateLoading("jotformRedirect", targetUrl, null);
         }
 
-        /**
-         * ⏳ VARIABLE LOADING ENGINE
-         */
         function simulateLoading(type, absoluteUrl, completedCallback) {
             const screen = document.getElementById("loadingScreen");
             const bar = document.getElementById("lsBar");
@@ -499,7 +490,6 @@
                         status.textContent = "Secure checkout ready.";
                     }
 
-                    // Run updates immediately when bar hits 100% while screen is fully black
                     if (completedCallback) completedCallback();
                     
                     setTimeout(() => {
@@ -587,9 +577,7 @@
                 };
             }).sort((a, b) => a.name.localeCompare(b.name));
 
-            // Component Interface Renderer
             container.innerHTML = cardsData.map(item => {
-                // 🛠️ RESTORED QUERY STRUCTURING: Builds the exact parameters matching your 'show' and 'school' fields
                 const targetShowParam = encodeURIComponent(showData.name);
                 const targetSchoolParam = encodeURIComponent(item.name);
                 const queryDestinationUrl = `${PORTAL_CONFIG.jotformBaseUrl}?show=${targetShowParam}&school=${targetSchoolParam}`;
