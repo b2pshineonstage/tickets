@@ -181,7 +181,7 @@
             color: var(--text-3);
         }
 
-        /* NEW: Grid wrapper for show cards */
+        /* Grid wrapper for show cards */
         .landing-cards-wrapper {
             padding: 24px 16px 40px;
             display: flex;
@@ -192,7 +192,7 @@
             margin: 0 auto;
         }
 
-        /* NEW: Show Selection Cards UI */
+        /* Show Selection Cards UI */
         .show-card {
             background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
             border: 2px solid var(--border-2);
@@ -364,13 +364,15 @@
     <header class="portal-header">
         <div class="portal-logo-container"><img src="logo.png" alt="Logo"></div>
         <h1 class="portal-headline">Ticket Booking Portal</h1>
-        <p class="portal-sub-headline" id="portalSubHeadline">Choose your show to see how your school is doing:</p>
+        <p class="portal-sub-headline" id="portalSubHeadline">Step 1: Choose your performance to begin booking tickets</p>
     </header>
 
+    <!-- STATE 1: Dynamic Show Card Landing Grid Wrapper -->
     <main class="landing-cards-wrapper" id="showSelectionContainer"></main>
 
+    <!-- STATE 2: School Selection Wrapper (Hidden on Initialization) -->
     <div id="leaderboardWrapper" style="display: none;">
-        <section class="leaderboard-section-title">School Support Leaderboard</section>
+        <section class="leaderboard-section-title">Step 2: Select Your Dance School</section>
         <section class="leaderboard-cards-wrapper" id="leaderboardContainer"></section>
     </div>
 
@@ -426,7 +428,7 @@
         window.addEventListener("DOMContentLoaded", () => {
             populateShows();
             simulateLoading("initial", null, () => {
-                // Keep leaderboard explicitly hidden on initial landing load
+                // Keep selector hidden on initial landing load
             });
         });
 
@@ -436,7 +438,7 @@
             container.innerHTML = PORTAL_CONFIG.showsDataManifest.map(show => 
                 `<a href="javascript:void(0);" onclick="handleShowSelection('${show.id}')" class="show-card">
                     <div class="show-card-title">${show.name}</div>
-                    <div class="show-card-action">Select Show →</div>
+                    <div class="show-card-action">Book Tickets →</div>
                 </a>`
             ).join('');
         }
@@ -450,7 +452,7 @@
             simulateLoading("showChange", null, () => {
                 // Swap Interface view containers
                 document.getElementById("showSelectionContainer").style.display = "none";
-                document.getElementById("portalSubHeadline").innerHTML = `Viewing results for: <strong style="color: var(--accent);">${showData.name}</strong>`;
+                document.getElementById("portalSubHeadline").innerHTML = `Selected Performance: <strong style="color: var(--accent);">${showData.name}</strong>`;
                 document.getElementById("leaderboardWrapper").style.display = "block";
                 
                 renderCards();
@@ -487,17 +489,6 @@
                     clearInterval(timer);
                     bar.style.width = "100%";
                     pct.textContent = "100%";
-                    
-                    if (type === "initial") {
-                        hype.textContent = "MAPPING THEATER SEATING...";
-                        status.textContent = "Seating arrangements configured.";
-                    } else if (type === "showChange") {
-                        hype.textContent = "LOADING DANCE SCHOOLS...";
-                        status.textContent = "School data loaded.";
-                    } else {
-                        hype.textContent = "OPENING TICKET PORTAL...";
-                        status.textContent = "Secure checkout ready.";
-                    }
                     
                     if (type === "initial") {
                         hype.textContent = "MAPPING THEATER SEATING...";
