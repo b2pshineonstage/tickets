@@ -376,8 +376,8 @@
 
     <script>
         const PORTAL_CONFIG = {
-            // Note: Replace with your actual live target form token if needed
-            jotformBaseUrl: "https://form.jotform.com/261234567890",
+            // Live target Jotform endpoint
+            jotformBaseUrl: "https://form.jotform.com/261435880262357",
             
             // Baseline Minimum Ticket volume before an evaluation ranking triggers
             minSalesThreshold: 10,
@@ -499,8 +499,7 @@
                         status.textContent = "Secure checkout ready.";
                     }
 
-                    // 🧠 THE FLICKER RESOLUTION: Run content updates immediately when bar hits 100% 
-                    // while the loading screen is still fully black and completely covering the background.
+                    // Run updates immediately when bar hits 100% while screen is fully black
                     if (completedCallback) completedCallback();
                     
                     setTimeout(() => {
@@ -559,7 +558,6 @@
                 let statusLabel = "";
                 let displayRatio = ratio.toFixed(1);
 
-                // 📊 Step 1 Variable Assessment Threshold Logic
                 if (sold < PORTAL_CONFIG.minSalesThreshold) {
                     tierClass = "tier-pending";
                     iconClass = "icon-pending";
@@ -591,9 +589,11 @@
 
             // Component Interface Renderer
             container.innerHTML = cardsData.map(item => {
-                const queryDestinationUrl = `${PORTAL_CONFIG.jotformBaseUrl}?show=${encodeURIComponent(selectedShowId)}&school=${encodeURIComponent(item.name)}`;
+                // 🛠️ RESTORED QUERY STRUCTURING: Builds the exact parameters matching your 'show' and 'school' fields
+                const targetShowParam = encodeURIComponent(showData.name);
+                const targetSchoolParam = encodeURIComponent(item.name);
+                const queryDestinationUrl = `${PORTAL_CONFIG.jotformBaseUrl}?show=${targetShowParam}&school=${targetSchoolParam}`;
                 
-                // Secondary baseline string substitution
                 const sublabelText = (item.statusText === "Pending Data") 
                     ? `Not enough sales yet to accurately evaluate turnout`
                     : `Click to begin buying tickets →`;
