@@ -380,53 +380,54 @@
     </div>
 
     <script>
+        /**
+         * =========================================================================
+         * 📝 PORTAL DATABASE DOCUMENTATION NOTE (WHERE DATA IS KEPT)
+         * =========================================================================
+         * All dynamic setup metrics live directly inside your Google Sheet.
+         * * SPREADSHEET TAB NAME REFERENCE:
+         * 1. 'Form Responses' -> Raw checkout logs directly from Jotform.
+         * 2. '🎟️ Ticket Sales' -> Matrix where Rows = School Names, Columns = Show Names.
+         * 3. '⚙️ Config'       -> Column A = School Names, Column B = Target Dancer Count.
+         * =========================================================================
+         */
         const PORTAL_CONFIG = {
+            // Target Jotform form destination link
             jotformBaseUrl: "https://form.jotform.com/261435880262357",
+            
+            // 🌐 YOUR LIVE DATABASE LINK GOES HERE:
+            googleSheetApiUrl: "PASTE_YOUR_APPS_SCRIPT_URL_HERE",
+            
+            // Baseline sales threshold required before turnout calculations turn on
             minSalesThreshold: 10,
 
-            showsDataManifest: [
-                {
-                    id: "show-001",
-                    name: "Friday Night Live Showcase — 10th July 2026",
-                    schools: {
-                        "Stardance Academy": 3,
-                        "Elite Moves": 22,
-                        "Grace School of Dance": 35
-                    }
-                },
-                {
-                    id: "show-002",
-                    name: "Saturday Matinee Spectacular — 11th July 2026",
-                    schools: {
-                        "Stardance Academy": 25,
-                        "Velocity Dance": 4,
-                        "Aspire Stage School": 19
-                    }
-                },
-                {
-                    id: "show-003",
-                    name: "Sunday Grand Finale — 12th July 2026",
-                    schools: {
-                        "Elite Moves": 5,
-                        "Velocity Dance": 18,
-                        "Aspire Stage School": 40
-                    }
-                }
-            ],
-            dancersDemographicsRoster: {
-                "Stardance Academy": 12,
-                "Elite Moves": 15,
-                "Grace School of Dance": 14,
-                "Velocity Dance": 10,
-                "Aspire Stage School": 16
-            }
+            // Containers initialized blank; auto-populated from Google Sheet
+            showsDataManifest: [],
+            dancersDemographicsRoster: {}
         };
 
         let activeShowId = null;
 
+        // Run data connection workflow immediately upon page load
         window.addEventListener("DOMContentLoaded", () => {
-            populateShows();
-            simulateLoading("initial", null, () => {});
+            if (PORTAL_CONFIG.googleSheetApiUrl === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
+                console.error("Configuration incomplete: Please specify your Google Web App link.");
+                return;
+            }
+
+            // Fetch live layout data directly from spreadsheet configuration tabs
+            fetch(PORTAL_CONFIG.googleSheetApiUrl)
+                .then(response => response.json())
+                .then(liveFeedData => {
+                    PORTAL_CONFIG.showsDataManifest = liveFeedData.shows;
+                    PORTAL_CONFIG.dancersDemographicsRoster = liveFeedData.roster;
+                    
+                    populateShows();
+                    simulateLoading("initial", null, () => {});
+                })
+                .catch(error => {
+                    console.error("Database connection failure:", error);
+                });
         });
 
         function populateShows() {
@@ -447,7 +448,6 @@
             simulateLoading("showChange", null, () => {
                 document.getElementById("showSelectionContainer").style.display = "none";
                 
-                // 🛠️ LINE BREAK ADDED HERE TO SPACE OUT BOTH SEGMENTS ACCURATELY
                 document.getElementById("dynamicHeaderContainer").innerHTML = `
                     <div class="portal-gold-header">Select the school you're coming to support...</div>
                     <br>
