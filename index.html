@@ -418,18 +418,18 @@
                 if (pct) pct.textContent = displayPct + "%";  
 
                 // Dynamically swap the exact phrases based on deceleration breakpoints  
-                if (hype && status) {  
-                    if (displayPct < 35) {  
-                        hype.textContent = "LOADING BOX OFFICE...";  
-                        status.textContent = "Opening secure channels...";  
-                    } else if (displayPct < 70) {  
-                        hype.textContent = "CALIBRATING PLATFORM...";  
-                        status.textContent = "Mapping active theater sheets...";  
-                    } else {  
-                        hype.textContent = "READYING SYSTEM...";  
-                        status.textContent = "Finalizing data manifest locks...";  
-                    }  
-                }  
+if (hype && status) {  
+    if (displayPct < 35) {  
+        hype.textContent = "CURTAIN RISING...";  
+        status.textContent = "Securing your front row manifest...";  
+    } else if (displayPct < 70) {  
+        hype.textContent = "LIGHTS DIMMING...";  
+        status.textContent = "Syncing live theatre box office data...";  
+    } else {  
+        hype.textContent = "PLACES PLEASE...";  
+        status.textContent = "Finalizing allocation maps... ready for booking!";  
+    }  
+}
 
                 setTimeout(updateLoader, 60);  
             }  
