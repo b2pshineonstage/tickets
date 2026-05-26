@@ -46,7 +46,7 @@
         }  
 
         /* ==========================================  
-           ⏳ SMOOTH NON-STALLING LOADING SCREEN  
+           ⏳ LOADING SCREEN WITH GLOW EFFECTS  
            ========================================== */  
         #loadingScreen {  
             position: fixed;  
@@ -71,6 +71,17 @@
             display: inline-block;  
             margin-bottom: 16px;  
         }  
+        .ls-logo-area::before {  
+            content: "";  
+            position: absolute;  
+            top: 50%; left: 50%;  
+            width: 140px; height: 140px;  
+            background: #F0A500;  
+            border-radius: 50%;  
+            transform: translate(-50%, -50%);  
+            filter: blur(45px);  
+            animation: glowPulse 3s infinite ease-in-out;  
+        }  
         .ls-logo-area img {  
             width: 140px; height: 140px;  
             position: relative;  
@@ -84,6 +95,16 @@
             color: #F0A500;  
             text-transform: uppercase;  
             margin: 8px 0 24px;  
+        }  
+        .ls-hype {  
+            font-size: 0.75rem;  
+            letter-spacing: 2px;  
+            color: #F0A500;  
+            text-transform: uppercase;  
+            font-weight: 700;  
+            height: 1.2rem;  
+            margin-bottom: 10px;  
+            text-align: center;  
         }  
         .ls-pct {  
             font-size: 2.8rem;  
@@ -104,6 +125,26 @@
             box-shadow: 0 0 12px #F0A500;  
             width: 0%;  
             transition: width 0.1s linear;  
+        }  
+        .ls-status {  
+            font-size: 12px;  
+            color: #555;  
+            margin-top: 14px;  
+            font-weight: 500;  
+            letter-spacing: 0.04em;  
+            text-align: center;  
+            padding: 0 20px;  
+        }  
+
+        @keyframes glowPulse {  
+            0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }  
+            50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.4); }  
+        }  
+        
+        /* 🔥 THE GLOWING RED BALL KEYFRAMES RESTORED */  
+        @keyframes pulseDotGlow {  
+            0%, 100% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 0 0 rgba(224, 85, 85, 0.7); }  
+            70% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 0 8px rgba(224, 85, 85, 0); }  
         }  
 
         /* ==========================================  
@@ -273,7 +314,8 @@
             display: inline-block;  
             flex-shrink: 0;  
         }  
-        .icon-critical { background: var(--red); }  
+        /* 🔥 GLOW ANIMATION ATTACHED BACK TO CRITICAL LOW TURNOUT */  
+        .icon-critical { background: var(--red); animation: pulseDotGlow 1.8s infinite ease-in-out; }  
         .icon-warning  { background: var(--accent); }  
         .icon-optimal  { background: var(--green); }  
         .icon-pending  { background: var(--muted); }  
@@ -317,8 +359,10 @@
     <div id="loadingScreen">  
         <div class="ls-logo-area"><img src="logo.png" alt="Logo"></div>  
         <div class="ls-title">Shine on Stage</div>  
+        <div class="ls-hype" id="lsHype">LOADING BOX OFFICE...</div>  
         <div class="ls-pct" id="lsPct">0%</div>  
         <div class="ls-bar-bg"><div class="ls-bar-fill" id="lsBar"></div></div>  
+        <div class="ls-status" id="lsStatus">Checking box office manifests...</div>  
     </div>  
 
     <header class="portal-header">  
@@ -350,26 +394,42 @@
         window.addEventListener("DOMContentLoaded", () => {  
             const bar = document.getElementById("lsBar");  
             const pct = document.getElementById("lsPct");  
+            const hype = document.getElementById("lsHype");  
+            const status = document.getElementById("lsStatus");  
             
-            // 🔄 SMOOTH, NON-STOPPING PROGRESS ENGINE  
-            // Starts normal, but drops into microscopic step adjustments as it goes higher so it NEVER freezes completely  
+            // 🔄 RESTORED PHRASE SYNC WITH NON-STOP PROGRESS ENGINE  
             function updateLoader() {  
                 if (apiFinished) return;  
 
                 let increment = 0;  
                 if (currentProgress < 50) {  
-                    increment = Math.random() * 4 + 2; // Fast climb early on  
+                    increment = Math.random() * 4 + 2;  
                 } else if (currentProgress < 80) {  
-                    increment = Math.random() * 1.5 + 0.5; // Smooth deceleration  
+                    increment = Math.random() * 1.5 + 0.5;  
                 } else if (currentProgress < 98) {  
-                    increment = (100 - currentProgress) * 0.05; // Infinite micro-steps so it never completely stalls  
+                    increment = (100 - currentProgress) * 0.05;  
                 }  
 
                 currentProgress += increment;  
-                if (currentProgress > 99) currentProgress = 99.1; // Hold just under 100% until API lands  
+                if (currentProgress > 99) currentProgress = 99.1;  
 
+                const displayPct = Math.floor(currentProgress);  
                 if (bar) bar.style.width = currentProgress.toFixed(1) + "%";  
-                if (pct) pct.textContent = Math.floor(currentProgress) + "%";  
+                if (pct) pct.textContent = displayPct + "%";  
+
+                // Dynamically swap the exact phrases based on deceleration breakpoints  
+                if (hype && status) {  
+                    if (displayPct < 35) {  
+                        hype.textContent = "LOADING BOX OFFICE...";  
+                        status.textContent = "Opening secure channels...";  
+                    } else if (displayPct < 70) {  
+                        hype.textContent = "CALIBRATING PLATFORM...";  
+                        status.textContent = "Mapping active theater sheets...";  
+                    } else {  
+                        hype.textContent = "READYING SYSTEM...";  
+                        status.textContent = "Finalizing data manifest locks...";  
+                    }  
+                }  
 
                 setTimeout(updateLoader, 60);  
             }  
@@ -385,7 +445,6 @@
             .then(liveFeedData => {  
                 apiFinished = true;  
                 
-                // Snap instantly to 100% completion  
                 if (bar) bar.style.width = "100%";  
                 if (pct) pct.textContent = "100%";  
 
@@ -394,7 +453,6 @@
                 
                 populateShows();  
 
-                // Remove loading screen immediately  
                 const screen = document.getElementById("loadingScreen");  
                 if (screen) {  
                     screen.classList.add("fade-out");  
@@ -403,6 +461,7 @@
             })  
             .catch(error => {  
                 console.error("Database connection failure:", error);  
+                if (status) status.textContent = "Connection Error. Please reload.";  
             });  
         });  
 
@@ -444,7 +503,6 @@
             const cardsData = Object.keys(showData.schools).map(schoolName => {  
                 const sold = Number(showData.schools[schoolName]) || 0;  
                 
-                // Match school names case-insensitively with white space removed  
                 const cleanKey = schoolName.replace(/\s+/g, '').toLowerCase();  
                 let dancers = 0;  
                 
@@ -455,15 +513,13 @@
                     }  
                 }  
 
-                // 📐 CRITICAL RATIO MATHEMATICS CORRECTION  
+                // Ratio Mathematics Check  
                 let ratio = 0;  
                 if (sold > 0) {  
                     if (dancers > 0) {  
                         ratio = sold / dancers;  
                     } else {  
-                        // Fallback logic: If the school name cannot be found in your spreadsheet roster data,  
-                        // we divide by an estimated baseline class size (e.g., 15) instead of 1, preventing the 5.0 ratio spike.  
-                        ratio = sold / 15;  
+                        ratio = sold / 15; // Realistic baseline fallback avoids a 5.0 spike if data name mapping breaks  
                     }  
                 }  
 
