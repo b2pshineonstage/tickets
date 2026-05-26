@@ -415,19 +415,29 @@
                 return;
             }
 
-            // Fetch live layout data directly from spreadsheet configuration tabs
-            fetch(PORTAL_CONFIG.googleSheetApiUrl)
-                .then(response => response.json())
-                .then(liveFeedData => {
-                    PORTAL_CONFIG.showsDataManifest = liveFeedData.shows;
-                    PORTAL_CONFIG.dancersDemographicsRoster = liveFeedData.roster;
-                    
-                    populateShows();
-                    simulateLoading("initial", null, () => {});
-                })
-                .catch(error => {
-                    console.error("Database connection failure:", error);
-                });
+         //  THE UPDATED, COMPATIBLE CODE:
+fetch(PORTAL_CONFIG.googleSheetApiUrl, {
+    method: "GET",
+    headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+    }
+})
+.then(response => {
+    if (!response.ok) throw new Error('Network response was not ok');
+    return response.json();
+})
+.then(liveFeedData => {
+    PORTAL_CONFIG.showsDataManifest = liveFeedData.shows;
+    PORTAL_CONFIG.dancersDemographicsRoster = liveFeedData.roster;
+    
+    populateShows();
+    simulateLoading("initial", null, () => {});
+})
+.catch(error => {
+    console.error("Database connection failure:", error);
+    // Alert the screen if it fails so it doesn't freeze silently
+    document.getElementById("lsStatus").textContent = "Connection Error. Please refresh.";
+});
         });
 
         function populateShows() {
