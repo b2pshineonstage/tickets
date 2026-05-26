@@ -1,443 +1,642 @@
-<!DOCTYPE html> 
-<html lang="en"> 
-<head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
-    <title>Shine on Stage - Ticket Booking Portal</title> 
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+    <title>Shine on Stage - Ticket Booking Portal</title>  
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;500;600;700&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;500;600;700&display=swap" rel="stylesheet">  
 
-    <style> 
-        :root { 
-            --bg: #09090C; 
-            --surface: #111217; 
-            --surface-2: #16171D; 
-            --border: #1E2029; 
-            --border-2: #262730; 
+    <style>  
+        :root {  
+            --bg: #09090C;  
+            --surface: #111217;  
+            --surface-2: #16171D;  
+            --border: #1E2029;  
+            --border-2: #262730;  
 
-            --accent: #F0A500; 
-            --red: #E05555; 
-            --green: #3ECF8E; 
-            --muted: #555555; 
+            --accent: #F0A500;  
+            --red: #E05555;  
+            --green: #3ECF8E;  
+            --muted: #555555;  
 
-            --text: #FFFFFF; 
-            --text-2: #E0E0E0; 
-            --text-3: #888888; 
+            --text: #FFFFFF;  
+            --text-2: #E0E0E0;  
+            --text-3: #888888;  
 
-            --font: 'Poppins', sans-serif; 
-            --radius: 16px; 
-        } 
+            --font: 'Poppins', sans-serif;  
+            --radius: 16px;  
+        }  
 
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-        } 
+        * {  
+            margin: 0;  
+            padding: 0;  
+            box-sizing: border-box;  
+            -webkit-tap-highlight-color: transparent;  
+        }  
 
-        body { 
-            background: var(--bg); 
-            color: var(--text); 
-            font-family: var(--font); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            overflow-x: hidden; 
-        } 
+        body {  
+            background: var(--bg);  
+            color: var(--text);  
+            font-family: var(--font);  
+            min-height: 100vh;  
+            display: flex;  
+            flex-direction: column;  
+            overflow-x: hidden;  
+        }  
 
-        /* ========================================== 
-           ⏳ LOADING SCREEN 
-           ========================================== */ 
-        #loadingScreen { 
-            position: fixed; 
-            inset: 0; 
-            background: #000; 
-            z-index: 9999; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            flex-direction: column; 
-            transition: opacity 0.4s ease; 
-        } 
-        #loadingScreen.fade-out { 
-            opacity: 0; 
-            pointer-events: none; 
-        } 
-        #loadingScreen.hidden { 
-            display: none; 
-        } 
-        .ls-logo-area { 
-            position: relative; 
-            display: inline-block; 
-            margin-bottom: 16px; 
-        } 
-        .ls-logo-area::before { 
-            content: ""; 
-            position: absolute; 
-            top: 50%; left: 50%; 
-            width: 140px; height: 140px; 
-            background: #F0A500; 
-            border-radius: 50%; 
-            transform: translate(-50%, -50%); 
-            filter: blur(45px); 
-            animation: glowPulse 3s infinite ease-in-out; 
-        } 
-        .ls-logo-area img { 
-            width: 140px; height: 140px; 
-            position: relative; 
-            z-index: 1; 
-            object-fit: contain; 
-        } 
-        .ls-title { 
-            font-size: 1.1rem; 
-            font-weight: 900; 
-            letter-spacing: 5px; 
-            color: #F0A500; 
-            text-transform: uppercase; 
-            margin: 8px 0 24px; 
-        } 
-        .ls-hype { 
-            font-size: 0.75rem; 
-            letter-spacing: 2px; 
-            color: #F0A500; 
-            text-transform: uppercase; 
-            font-weight: 700; 
-            height: 1.2rem; 
-            margin-bottom: 10px; 
-            text-align: center; 
-        } 
-        .ls-pct { 
-            font-size: 2.8rem; 
-            font-weight: 900; 
-            color: #fff; 
-            font-variant-numeric: tabular-nums; 
-            margin-bottom: 10px; 
-        } 
-        .ls-bar-bg { 
-            width: 220px; height: 3px; 
-            background: #1a1a1a; 
-            border-radius: 10px; 
-            overflow: hidden; 
-        } 
-        .ls-bar-fill { 
-            height: 100%; 
-            background: #F0A500; 
-            box-shadow: 0 0 12px #F0A500; 
-            width: 0%; 
-        } 
-        .ls-status { 
-            font-size: 12px; 
-            color: #555; 
-            margin-top: 14px; 
-            font-weight: 500; 
-            letter-spacing: 0.04em; 
-            text-align: center; 
-            padding: 0 20px; 
-        } 
+        /* ==========================================  
+           ⏳ LOADING SCREEN  
+           ========================================== */  
+        #loadingScreen {  
+            position: fixed;  
+            inset: 0;  
+            background: #000;  
+            z-index: 9999;  
+            display: flex;  
+            align-items: center;  
+            justify-content: center;  
+            flex-direction: column;  
+            transition: opacity 0.4s ease;  
+        }  
+        #loadingScreen.fade-out {  
+            opacity: 0;  
+            pointer-events: none;  
+        }  
+        #loadingScreen.hidden {  
+            display: none;  
+        }  
+        .ls-logo-area {  
+            position: relative;  
+            display: inline-block;  
+            margin-bottom: 16px;  
+        }  
+        .ls-logo-area::before {  
+            content: "";  
+            position: absolute;  
+            top: 50%; left: 50%;  
+            width: 140px; height: 140px;  
+            background: #F0A500;  
+            border-radius: 50%;  
+            transform: translate(-50%, -50%);  
+            filter: blur(45px);  
+            animation: glowPulse 3s infinite ease-in-out;  
+        }  
+        .ls-logo-area img {  
+            width: 140px; height: 140px;  
+            position: relative;  
+            z-index: 1;  
+            object-fit: contain;  
+        }  
+        .ls-title {  
+            font-size: 1.1rem;  
+            font-weight: 900;  
+            letter-spacing: 5px;  
+            color: #F0A500;  
+            text-transform: uppercase;  
+            margin: 8px 0 24px;  
+        }  
+        .ls-hype {  
+            font-size: 0.75rem;  
+            letter-spacing: 2px;  
+            color: #F0A500;  
+            text-transform: uppercase;  
+            font-weight: 700;  
+            height: 1.2rem;  
+            margin-bottom: 10px;  
+            text-align: center;  
+        }  
+        .ls-pct {  
+            font-size: 2.8rem;  
+            font-weight: 900;  
+            color: #fff;  
+            font-variant-numeric: tabular-nums;  
+            margin-bottom: 10px;  
+        }  
+        .ls-bar-bg {  
+            width: 220px; height: 3px;  
+            background: #1a1a1a;  
+            border-radius: 10px;  
+            overflow: hidden;  
+        }  
+        .ls-bar-fill {  
+            height: 100%;  
+            background: #F0A500;  
+            box-shadow: 0 0 12px #F0A500;  
+            width: 0%;  
+        }  
+        .ls-status {  
+            font-size: 12px;  
+            color: #555;  
+            margin-top: 14px;  
+            font-weight: 500;  
+            letter-spacing: 0.04em;  
+            text-align: center;  
+            padding: 0 20px;  
+        }  
 
-        /* ========================================== 
-           🚨 ANIMATIONS 
-           ========================================== */ 
-        @keyframes glowPulse { 
-            0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); } 
-            50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.4); } 
-        } 
-        @keyframes pulseDotGlow { 
-            0%, 100% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 0 0 rgba(224, 85, 85, 0.7); } 
-            70% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 0 8px rgba(224, 85, 85, 0); } 
-        } 
+        /* ==========================================  
+           🚨 ANIMATIONS  
+           ========================================== */  
+        @keyframes glowPulse {  
+            0%, 100% { opacity: 0.15; transform: translate(-50%, -50%) scale(1); }  
+            50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1.4); }  
+        }  
+        @keyframes pulseDotGlow {  
+            0%, 100% { transform: scale(1); opacity: 0.4; box-shadow: 0 0 0 0 rgba(224, 85, 85, 0.7); }  
+            70% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 0 8px rgba(224, 85, 85, 0); }  
+        }  
 
-        /* ========================================== 
-           📱 PORTAL UI MAIN LAYOUT & WIZARD TYPOGRAPHY 
-           ========================================== */ 
-        .portal-header { 
-            padding: 24px 16px 12px; 
-            text-align: center; 
-            background: linear-gradient(to bottom, rgba(17,18,23,0.8), transparent); 
-            border-bottom: 1px solid var(--border); 
-        } 
+        /* ==========================================  
+           📱 PORTAL UI MAIN LAYOUT & WIZARD TYPOGRAPHY  
+           ========================================== */  
+        .portal-header {  
+            padding: 24px 16px 12px;  
+            text-align: center;  
+            background: linear-gradient(to bottom, rgba(17,18,23,0.8), transparent);  
+            border-bottom: 1px solid var(--border);  
+        }  
 
-        .portal-logo-container { 
-            width: 64px; 
-            height: 64px; 
-            margin: 0 auto 12px; 
-        } 
+        .portal-logo-container {  
+            width: 64px;  
+            height: 64px;  
+            margin: 0 auto 12px;  
+        }  
 
-        .portal-logo-container img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-        } 
+        .portal-logo-container img {  
+            width: 100%;  
+            height: 100%;  
+            object-fit: contain;  
+        }  
 
-        .portal-headline { 
-            font-size: 24px; 
-            font-weight: 700; 
-            letter-spacing: -0.02em; 
-            margin-bottom: 8px; 
-        } 
+        .portal-headline {  
+            font-size: 24px;  
+            font-weight: 700;  
+            letter-spacing: -0.02em;  
+            margin-bottom: 8px;  
+        }  
 
-        .portal-gold-header { 
-            font-family: Arial, Helvetica, sans-serif; 
-            font-size: 12pt; 
-            font-weight: 700; 
-            color: var(--accent); 
-            line-height: 1.4; 
-            letter-spacing: -0.01em; 
-            -webkit-font-smoothing: antialiased; 
-            display: block; 
-        } 
+        .portal-gold-header {  
+            font-family: Arial, Helvetica, sans-serif;  
+            font-size: 12pt;  
+            font-weight: 700;  
+            color: var(--accent);  
+            line-height: 1.4;  
+            letter-spacing: -0.01em;  
+            -webkit-font-smoothing: antialiased;  
+            display: block;  
+        }  
 
-        .portal-white-subheader { 
-            font-family: Arial, Helvetica, sans-serif; 
-            font-size: 12pt; 
-            font-weight: 400; 
-            color: var(--text); 
-            line-height: 1.4; 
-            letter-spacing: -0.01em; 
-            -webkit-font-smoothing: antialiased; 
-            display: block; 
-        } 
+        .portal-white-subheader {  
+            font-family: Arial, Helvetica, sans-serif;  
+            font-size: 12pt;  
+            font-weight: 400;  
+            color: var(--text);  
+            line-height: 1.4;  
+            letter-spacing: -0.01em;  
+            -webkit-font-smoothing: antialiased;  
+            display: block;  
+        }  
 
-        .landing-cards-wrapper { 
-            padding: 24px 16px 40px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 16px; 
-            max-width: 600px; 
-            width: 100%; 
-            margin: 0 auto; 
-        } 
+        .landing-cards-wrapper {  
+            padding: 24px 16px 40px;  
+            display: flex;  
+            flex-direction: column;  
+            gap: 16px;  
+            max-width: 600px;  
+            width: 100%;  
+            margin: 0 auto;  
+        }  
 
-        .show-card { 
-            background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%); 
-            border: 2px solid var(--border-2); 
-            border-radius: var(--radius); 
-            padding: 22px 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            text-decoration: none; 
-            cursor: pointer; 
-            transition: transform 0.15s ease, border-color 0.15s ease; 
-        } 
+        .show-card {  
+            background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);  
+            border: 2px solid var(--border-2);  
+            border-radius: var(--radius);  
+            padding: 22px 20px;  
+            display: flex;  
+            justify-content: space-between;  
+            align-items: center;  
+            text-decoration: none;  
+            cursor: pointer;  
+            transition: transform 0.15s ease, border-color 0.15s ease;  
+        }  
 
-        .show-card:hover { 
-            border-color: var(--accent); 
-        } 
+        .show-card:hover {  
+            border-color: var(--accent);  
+        }  
 
-        .show-card:active { 
-            transform: scale(0.98); 
-        } 
+        .show-card:active {  
+            transform: scale(0.98);  
+        }  
 
-        .show-card-title { 
-            font-size: 16px; 
-            font-weight: 600; 
-            color: var(--text); 
-            padding-right: 12px; 
-            line-height: 1.4; 
-        } 
+        .show-card-title {  
+            font-size: 16px;  
+            font-weight: 600;  
+            color: var(--text);  
+            padding-right: 12px;  
+            line-height: 1.4;  
+        }  
 
-        .show-card-action { 
-            font-size: 12px; 
-            font-weight: 700; 
-            color: var(--accent); 
-            text-transform: uppercase; 
-            letter-spacing: 0.05em; 
-            flex-shrink: 0; 
-        } 
+        .show-card-action {  
+            font-size: 12px;  
+            font-weight: 700;  
+            color: var(--accent);  
+            text-transform: uppercase;  
+            letter-spacing: 0.05em;  
+            flex-shrink: 0;  
+        }  
 
-        /* ========================================== 
-           🏆 CARD MATRIX LAYOUT 
-           ========================================== */ 
-        .leaderboard-cards-wrapper { 
-            padding: 24px 16px 40px; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-            max-width: 600px; 
-            width: 100%; 
-            margin: 0 auto; 
-        } 
+        /* ==========================================  
+           🏆 CARD MATRIX LAYOUT  
+           ========================================== */  
+        .leaderboard-cards-wrapper {  
+            padding: 24px 16px 40px;  
+            display: flex;  
+            flex-direction: column;  
+            gap: 12px;  
+            max-width: 600px;  
+            width: 100%;  
+            margin: 0 auto;  
+        }  
 
-        .portal-card { 
-            background: var(--surface); 
-            border: 2px solid var(--border-2); 
-            border-radius: var(--radius); 
-            padding: 16px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            text-decoration: none; 
-            transition: transform 0.15s ease, background-color 0.15s ease; 
-        } 
+        .portal-card {  
+            background: var(--surface);  
+            border: 2px solid var(--border-2);  
+            border-radius: var(--radius);  
+            padding: 16px;  
+            display: flex;  
+            justify-content: space-between;  
+            align-items: center;  
+            text-decoration: none;  
+            transition: transform 0.15s ease, background-color 0.15s ease;  
+        }  
 
-        .portal-card:active { 
-            transform: scale(0.98); 
-            background: var(--surface-2); 
-        } 
+        .portal-card:active {  
+            transform: scale(0.98);  
+            background: var(--surface-2);  
+        }  
 
-        .card-meta-left { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 3px; 
-            min-width: 0; 
-            flex: 1; 
-        } 
+        .card-meta-left {  
+            display: flex;  
+            flex-direction: column;  
+            gap: 3px;  
+            min-width: 0;  
+            flex: 1;  
+        }  
 
-        .card-main-title { 
-            font-size: 16px; 
-            font-weight: 600; 
-            color: var(--text); 
-            line-height: 1.3; 
-            display: -webkit-box; 
-            -webkit-line-clamp: 2; 
-            -webkit-box-orient: vertical; 
-            overflow: hidden; 
-            white-space: normal; 
-        } 
+        .card-main-title {  
+            font-size: 16px;  
+            font-weight: 600;  
+            color: var(--text);  
+            line-height: 1.3;  
+            display: -webkit-box;  
+            -webkit-line-clamp: 2;  
+            -webkit-box-orient: vertical;  
+            overflow: hidden;  
+            white-space: normal;  
+        }  
 
-        .card-sub-label { 
-            font-size: 13px; 
-            color: var(--text-3); 
-        } 
+        .card-sub-label {  
+            font-size: 13px;  
+            color: var(--text-3);  
+        }  
 
-        .card-metric-right { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: flex-end; 
-            gap: 4px; 
-            padding-left: 12px; 
-            flex-shrink: 0; 
-        } 
+        .card-metric-right {  
+            display: flex;  
+            flex-direction: column;  
+            align-items: flex-end;  
+            gap: 4px;  
+            padding-left: 12px;  
+            flex-shrink: 0;  
+        }  
 
-        .tier-status-wrapper { 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-        } 
+        .tier-status-wrapper {  
+            display: flex;  
+            align-items: center;  
+            gap: 8px;  
+        }  
 
-        .turnout-status-icon { 
-            width: 12px; 
-            height: 12px; 
-            border-radius: 50%; 
-            display: inline-block; 
-            flex-shrink: 0; 
-        } 
-        .icon-critical { background: var(--red); animation: pulseDotGlow 1.8s infinite ease-in-out; } 
-        .icon-warning  { background: var(--accent); } 
-        .icon-optimal  { background: var(--green); } 
-        .icon-pending  { background: var(--muted); } 
+        .turnout-status-icon {  
+            width: 12px;  
+            height: 12px;  
+            border-radius: 50%;  
+            display: inline-block;  
+            flex-shrink: 0;  
+        }  
+        .icon-critical { background: var(--red); animation: pulseDotGlow 1.8s infinite ease-in-out; }  
+        .icon-warning  { background: var(--accent); }  
+        .icon-optimal  { background: var(--green); }  
+        .icon-pending  { background: var(--muted); }  
 
-        .tier-title { 
-            font-size: 12px; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 0.05em; 
-        } 
+        .tier-title {  
+            font-size: 12px;  
+            font-weight: 700;  
+            text-transform: uppercase;  
+            letter-spacing: 0.05em;  
+        }  
 
-        .tier-value { 
-            font-size: 13px; 
-            color: var(--text-2); 
-            font-weight: 500; 
-        } 
+        .tier-value {  
+            font-size: 13px;  
+            color: var(--text-2);  
+            font-weight: 500;  
+        }  
 
-        .tier-value span { 
-            font-size: 18px; 
-            font-weight: 700; 
-            color: var(--text); 
-        } 
+        .tier-value span {  
+            font-size: 18px;  
+            font-weight: 700;  
+            color: var(--text);  
+        }  
 
-        .tier-critical .tier-title { color: var(--red); } 
-        .tier-warning .tier-title { color: var(--accent); } 
-        .tier-optimal .tier-title { color: var(--green); } 
-        .tier-pending .tier-title { color: var(--text-3); } 
-       
-        /* 📱 Responsive Mobile Layout Adjustments */ 
-        @media (max-width: 480px) { 
-            .portal-card { 
-                flex-direction: column; 
-                align-items: flex-start; 
-                gap: 12px; 
-            } 
-             
-            .card-meta-left { 
-                width: 100%; 
-            } 
-             
-            .card-metric-right { 
-                width: 100%; 
-                padding-left: 0; 
-                align-items: flex-start; 
-                border-top: 1px solid var(--border); 
-                padding-top: 10px; 
-                margin-top: 4px; 
-            } 
-        } 
-    </style> 
-</head> 
-<body> 
+        .tier-critical .tier-title { color: var(--red); }  
+        .tier-warning .tier-title { color: var(--accent); }  
+        .tier-optimal .tier-title { color: var(--green); }  
+        .tier-pending .tier-title { color: var(--text-3); }  
+        
+        /* 📱 Responsive Mobile Layout Adjustments */  
+        @media (max-width: 480px) {  
+            .portal-card {  
+                flex-direction: column;  
+                align-items: flex-start;  
+                gap: 12px;  
+            }  
+            
+            .card-meta-left {  
+                width: 100%;  
+            }  
+            
+            .card-metric-right {  
+                width: 100%;  
+                padding-left: 0;  
+                align-items: flex-start;  
+                border-top: 1px solid var(--border);  
+                padding-top: 10px;  
+                margin-top: 4px;  
+            }  
+        }  
+    </style>  
+</head>  
+<body>  
 
-    <div id="loadingScreen"> 
-        <div class="ls-logo-area"><img src="logo.png" alt="Logo"></div> 
-        <div class="ls-title">Shine on Stage</div> 
-        <div class="ls-hype" id="lsHype">LOADING BOX OFFICE...</div> 
-        <div class="ls-pct" id="lsPct">0%</div> 
-        <div class="ls-bar-bg"><div class="ls-bar-fill" id="lsBar"></div></div> 
-        <div class="ls-status" id="lsStatus">Checking box office manifests...</div> 
-    </div> 
+    <div id="loadingScreen">  
+        <div class="ls-logo-area"><img src="logo.png" alt="Logo"></div>  
+        <div class="ls-title">Shine on Stage</div>  
+        <div class="ls-hype" id="lsHype">LOADING BOX OFFICE...</div>  
+        <div class="ls-pct" id="lsPct">0%</div>  
+        <div class="ls-bar-bg"><div class="ls-bar-fill" id="lsBar"></div></div>  
+        <div class="ls-status" id="lsStatus">Checking box office manifests...</div>  
+    </div>  
 
-    <header class="portal-header"> 
-        <div class="portal-logo-container"><img src="logo.png" alt="Logo"></div> 
-        <h1 class="portal-headline">Ticket Booking Portal</h1> 
-        <div id="dynamicHeaderContainer"> 
-            <div class="portal-gold-header">Select your performance</div> 
-        </div> 
-    </header> 
+    <header class="portal-header">  
+        <div class="portal-logo-container"><img src="logo.png" alt="Logo"></div>  
+        <h1 class="portal-headline">Ticket Booking Portal</h1>  
+        <div id="dynamicHeaderContainer">  
+            <div class="portal-gold-header">Select your performance</div>  
+        </div>  
+    </header>  
 
-    <main class="landing-cards-wrapper" id="showSelectionContainer"></main> 
+    <main class="landing-cards-wrapper" id="showSelectionContainer"></main>  
 
-    <div id="leaderboardWrapper" style="display: none;"> 
-        <section class="leaderboard-cards-wrapper" id="leaderboardContainer"></section> 
-    </div> 
+    <div id="leaderboardWrapper" style="display: none;">  
+        <section class="leaderboard-cards-wrapper" id="leaderboardContainer"></section>  
+    </div>  
 
-    <script> 
-        const PORTAL_CONFIG = { 
-            jotformBaseUrl: "https://form.jotform.com/261435880262357", 
-            googleSheetApiUrl: "https://script.google.com/macros/s/AKfycbxob7KaAWNSF4tFcKaGDwiuR1BSH8zQTT49_wia27xTnWyNPHewhiAzcrlKwT5UwJwF/exec", 
-            minSalesThreshold: 1, 
-            showsDataManifest: [], 
-            dancersDemographicsRoster: {} 
-        }; 
+    <script>  
+        const PORTAL_CONFIG = {  
+            jotformBaseUrl: "https://form.jotform.com/261435880262357",  
+            googleSheetApiUrl: "https://script.google.com/macros/s/AKfycbxob7KaAWNSF4tFcKaGDwiuR1BSH8zQTT49_wia27xTnWyNPHewhiAzcrlKwT5UwJwF/exec",  
+            minSalesThreshold: 1,  
+            showsDataManifest: [],  
+            dancersDemographicsRoster: {}  
+        };  
 
-        let activeShowId = null; 
+        let activeShowId = null;  
+        let isDataLoaded = false; // Flag to track when data arrives
 
-        window.addEventListener("DOMContentLoaded", () => { 
-            if (PORTAL_CONFIG.googleSheetApiUrl === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") { 
-                console.error("Configuration incomplete: Please specify your Google Web App link."); 
-                return; 
-            } 
+        window.addEventListener("DOMContentLoaded", () => {  
+            if (PORTAL_CONFIG.googleSheetApiUrl === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {  
+                console.error("Configuration incomplete: Please specify your Google Web App link.");  
+                return;  
+            }  
 
-            fetch(PORTAL_CONFIG.googleSheetApiUrl, { 
-                method: "GET", 
-                headers: { 
-                    "Content-Type": "text/plain;charset=utf-8" 
-                } 
-            }) 
-            .then(response => { 
-                if (!response.ok) throw new Error('Network response was not ok'); 
-                return response.json(); 
-            }) 
-            .then(liveFeedData => { 
-                PORTAL_CONFIG.showsDataManifest = liveFeedData.shows || []; 
-                PORTAL_CONFIG.dancersDemographicsRoster = liveFeedData.roster || {}; 
-                 
-                populateShows(); 
-                simulateLoading("initial", null, () => {}); 
-            }) 
-            .catch(error => { 
-                console.error("Database connection failure:", error); 
-                document.getElementById("lsStatus").textContent = "Connection Error. Please refresh."; 
-            }); 
-        }); 
+            // 🎯 FIX: Fire loading animation immediately so it doesn't freeze at 0%
+            simulateLoading("initial", null, () => {
+                // If data has already finished fetching by the time animation hits 100%, run setup
+                if (isDataLoaded) {
+                    populateShows();
+                }
+            });  
 
-        function populateShows()
+            fetch(PORTAL_CONFIG.googleSheetApiUrl, {  
+                method: "GET",  
+                headers: {  
+                    "Content-Type": "text/plain;charset=utf-8"  
+                }  
+            })  
+            .then(response => {  
+                if (!response.ok) throw new Error('Network response was not ok');  
+                return response.json();  
+            })  
+            .then(liveFeedData => {  
+                PORTAL_CONFIG.showsDataManifest = liveFeedData.shows || [];  
+                PORTAL_CONFIG.dancersDemographicsRoster = liveFeedData.roster || {};  
+                isDataLoaded = true;
+                
+                // If animation completed fast or was already running, render data
+                populateShows();  
+            })  
+            .catch(error => {  
+                console.error("Database connection failure:", error);  
+                const statusEl = document.getElementById("lsStatus");
+                if (statusEl) statusEl.textContent = "Connection Error. Please check your network connection.";  
+            });  
+        });  
+
+        function populateShows() {  
+            const container = document.getElementById("showSelectionContainer");  
+            if (!container || !PORTAL_CONFIG.showsDataManifest || PORTAL_CONFIG.showsDataManifest.length === 0) return;  
+
+            container.innerHTML = PORTAL_CONFIG.showsDataManifest.map(show =>   
+                `<a href="javascript:void(0);" onclick="handleShowSelection('${show.id}')" class="show-card">  
+                    <div class="show-card-title">${show.name}</div>  
+                    <div class="show-card-action">Book Tickets →</div>  
+                </a>`  
+            ).join('');  
+        }  
+
+        function handleShowSelection(showId) {  
+            activeShowId = showId;  
+            const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === showId);  
+            if (!showData) return;  
+
+            simulateLoading("showChange", null, () => {  
+                document.getElementById("showSelectionContainer").style.display = "none";  
+                  
+                document.getElementById("dynamicHeaderContainer").innerHTML = `  
+                    <div class="portal-gold-header">Select the school you're coming to support...</div>  
+                    <br>  
+                    <div class="portal-white-subheader">You're coming to: <b>${showData.name}</b></div>  
+                `;  
+                  
+                document.getElementById("leaderboardWrapper").style.display = "block";  
+                renderCards();  
+            });  
+        }  
+
+        function routeToBooking(targetUrl) {  
+            simulateLoading("jotformRedirect", targetUrl, null);  
+        }  
+
+        function simulateLoading(type, absoluteUrl, completedCallback) {  
+            const screen = document.getElementById("loadingScreen");  
+            const bar = document.getElementById("lsBar");  
+            const pct = document.getElementById("lsPct");  
+            const hype = document.getElementById("lsHype");  
+            const status = document.getElementById("lsStatus");  
+
+            if (!screen || !bar || !pct) return;
+
+            screen.classList.remove("fade-out", "hidden");  
+            bar.style.width = "0%";  
+            pct.textContent = "0%";  
+
+            let p = 0;  
+            let intervalSpeed = (type === "initial") ? 30 : 12;  
+
+            let timer = setInterval(() => {  
+                p += (type === "initial") ? Math.floor(Math.random() * 5) + 2 : Math.floor(Math.random() * 15) + 8;  
+                  
+                if (p >= 100) {  
+                    p = 100;  
+                    clearInterval(timer);  
+                    bar.style.width = "100%";  
+                    pct.textContent = "100%";  
+                      
+                    if (type === "initial") {  
+                        if (hype) hype.textContent = "MAPPING THEATER SEATING...";  
+                        if (status) status.textContent = "Seating arrangements configured.";  
+                    } else if (type === "showChange") {  
+                        if (hype) hype.textContent = "LOADING DANCE SCHOOLS...";  
+                        if (status) status.textContent = "School data loaded.";  
+                    } else {  
+                        if (hype) hype.textContent = "OPENING TICKET PORTAL...";  
+                        if (status) status.textContent = "Secure checkout ready.";  
+                    }  
+
+                    if (completedCallback) completedCallback();  
+                      
+                    if (type === "jotformRedirect" && absoluteUrl) {  
+                        window.location.href = absoluteUrl;  
+                    } else {  
+                        setTimeout(() => {  
+                            screen.classList.add("fade-out");  
+                            setTimeout(() => {  
+                                screen.classList.add("hidden");  
+                            }, 400);  
+                        }, 200);  
+                    }  
+                } else {  
+                    bar.style.width = p + "%";  
+                    pct.textContent = p + "%";  
+
+                    if (type === "initial") {  
+                        if (p < 25) {  
+                            if (hype) hype.textContent = "LOADING BOX OFFICE...";  
+                            if (status) status.textContent = "Opening channels...";  
+                        } else if (p < 50) {  
+                            if (hype) hype.textContent = "TURNING ON THE POPCORN MACHINE...";  
+                            if (status) status.textContent = "Heating up elements...";  
+                        } else if (p < 75) {  
+                            if (hype) hype.textContent = "TESTING THE SPOTLIGHT...";  
+                            if (status) status.textContent = "Calibrating stage frames...";  
+                        } else {  
+                            if (hype) hype.textContent = "MAPPING THEATER SEATING...";  
+                            if (status) status.textContent = "Calculating seat distributions...";  
+                        }  
+                    } else if (type === "showChange") {  
+                        if (hype) hype.textContent = "LOADING DANCE SCHOOLS...";  
+                        if (status) status.textContent = "Swapping performance rosters...";  
+                    } else {  
+                        if (hype) hype.textContent = "OPENING TICKET PORTAL...";  
+                        if (status) status.textContent = "Forwarding safely to checkout secure lines...";  
+                    }  
+                }  
+            }, intervalSpeed);  
+        }  
+
+        function renderCards() {  
+            const selectedShowId = activeShowId;  
+            const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === selectedShowId);  
+            const container = document.getElementById("leaderboardContainer");  
+
+            if (!showData || !container || !showData.schools) return;  
+
+            const cardsData = Object.keys(showData.schools).map(schoolName => {  
+                const sold = Number(showData.schools[schoolName]) || 0;  
+                const dancers = Number(PORTAL_CONFIG.dancersDemographicsRoster[schoolName]) || 1;  
+                const ratio = sold / dancers;  
+
+                let tierClass = "";  
+                let iconClass = "";  
+                let statusLabel = "";  
+
+                if (sold < PORTAL_CONFIG.minSalesThreshold) {  
+                    tierClass = "tier-pending";  
+                    iconClass = "icon-pending";  
+                    statusLabel = "Ticket Sales Open";  
+                } else if (ratio < 1.0) {  
+                    tierClass = "tier-critical";  
+                    iconClass = "icon-critical";  
+                    statusLabel = "Low Turnout";  
+                } else if (ratio >= 1.0 && ratio < 1.5) {  
+                    tierClass = "tier-warning";  
+                    iconClass = "icon-warning";  
+                    statusLabel = "Good Turnout";  
+                } else {  
+                    tierClass = "tier-optimal";  
+                    iconClass = "icon-optimal";  
+                    statusLabel = "Excellent Turnout";  
+                }  
+
+                return {  
+                    name: schoolName,  
+                    sold: sold,  
+                    ratio: ratio,  
+                    tierClass: tierClass,  
+                    iconClass: iconClass,  
+                    statusText: statusLabel  
+                };  
+            }).sort((a, b) => a.name.localeCompare(b.name));  
+
+            container.innerHTML = cardsData.map(item => {  
+                const targetShowParam = encodeURIComponent(showData.name);  
+                const targetSchoolParam = encodeURIComponent(item.name);  
+                const queryDestinationUrl = `${PORTAL_CONFIG.jotformBaseUrl}?show=${targetShowParam}&school=${targetSchoolParam}`;  
+                  
+                const sublabelText = (item.sold === 0)   
+                    ? `Be the first to secure tickets for this school! →`  
+                    : `Click to buy tickets for this school →`;  
+
+                const metricBoxHtml = (item.sold === 0) ? '' : `  
+                    <div class="card-metric-right ${item.tierClass}">  
+                        <div class="tier-status-wrapper">  
+                            🎟️ <span class="turnout-status-icon ${item.iconClass}"></span>  
+                            <div class="tier-title">${item.statusText}</div>  
+                        </div>  
+                        <div class="tier-value"><span>${item.ratio.toFixed(1)}</span> Seats / Dancer</div>  
+                    </div>  
+                `;  
+
+                return `  
+                    <a href="javascript:void(0);" onclick="routeToBooking('${queryDestinationUrl}')" class="portal-card">  
+                        <div class="card-meta-left">  
+                            <div class="card-main-title">${item.name}</div>  
+                            <div class="card-sub-label" style="color: ${item.sold === 0 ? 'var(--accent)' : 'var(--text-3)'}; font-weight: ${item.sold === 0 ? '500' : '400'};">${sublabelText}</div>  
+                        </div>  
+                        ${metricBoxHtml}  
+                    </a>  
+                `;  
+            }).join('');  
+        }  
+    </script>  
+</body>  
+</html>
