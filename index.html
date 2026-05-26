@@ -176,7 +176,7 @@
             margin-bottom: 8px;
         }
 
-        /* 🔤 PIXEL-PERFECT JOTFORM TYPOGRAPHY CLONES */
+        /* 🔤 ONLY These Two Wizard Classes Use Arial 12pt */
         .portal-gold-header {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 12pt;
@@ -446,7 +446,6 @@
             simulateLoading("showChange", null, () => {
                 document.getElementById("showSelectionContainer").style.display = "none";
                 
-                // 🛠️ TARGET MATCH: Bold formatting tags added directly to the structural line substitution block
                 document.getElementById("dynamicHeaderContainer").innerHTML = `
                     <div class="portal-gold-header" style="margin-bottom: 2px;">Select the school you're coming to support...</div>
                     <div class="portal-white-subheader">You're coming to: <b>${showData.name}</b></div>
@@ -476,13 +475,7 @@
             let intervalSpeed = (type === "initial") ? 30 : 12;
 
             let timer = setInterval(() => {
-                if (type === "jotformRedirect" && p >= 95) {
-                    p += 1;
-                    if (p > 99) p = 99; 
-                    intervalSpeed = 300; 
-                } else {
-                    p += (type === "initial") ? Math.floor(Math.random() * 5) + 2 : Math.floor(Math.random() * 15) + 8;
-                }
+                p += (type === "initial") ? Math.floor(Math.random() * 5) + 2 : Math.floor(Math.random() * 15) + 8;
                 
                 if (p >= 100) {
                     p = 100;
@@ -493,29 +486,31 @@
                     if (type === "initial") {
                         hype.textContent = "MAPPING THEATER SEATING...";
                         status.textContent = "Seating arrangements configured.";
-                    } else {
+                    } else if (type === "showChange") {
                         hype.textContent = "LOADING DANCE SCHOOLS...";
                         status.textContent = "School data loaded.";
+                    } else {
+                        hype.textContent = "OPENING TICKET PORTAL...";
+                        status.textContent = "Secure checkout ready.";
                     }
 
                     if (completedCallback) completedCallback();
                     
-                    setTimeout(() => {
-                        screen.classList.add("fade-out");
+                    // 🚨 REDIRECT RUNNER: If final step, instantly pass control to Jotform. 
+                    // Never fade the screen or let them see the cards page again.
+                    if (type === "jotformRedirect" && absoluteUrl) {
+                        window.location.href = absoluteUrl;
+                    } else {
                         setTimeout(() => {
-                            screen.classList.add("hidden");
-                        }, 400);
-                    }, 200);
-
+                            screen.classList.add("fade-out");
+                            setTimeout(() => {
+                                screen.classList.add("hidden");
+                            }, 400);
+                        }, 200);
+                    }
                 } else {
                     bar.style.width = p + "%";
                     pct.textContent = p + "%";
-
-                    if (type === "jotformRedirect" && p === 95 && absoluteUrl) {
-                        hype.textContent = "OPENING TICKET PORTAL...";
-                        status.textContent = "Connecting to checkout lines...";
-                        window.location.href = absoluteUrl; 
-                    }
 
                     if (type === "initial") {
                         if (p < 25) {
@@ -534,6 +529,9 @@
                     } else if (type === "showChange") {
                         hype.textContent = "LOADING DANCE SCHOOLS...";
                         status.textContent = "Swapping performance rosters...";
+                    } else {
+                        hype.textContent = "OPENING TICKET PORTAL...";
+                        status.textContent = "Forwarding safely to checkout secure lines...";
                     }
                 }
             }, intervalSpeed);
