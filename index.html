@@ -181,34 +181,54 @@
             color: var(--text-3);
         }
 
-        .show-selector-container {
-            padding: 16px;
+        /* NEW: Grid wrapper for show cards */
+        .landing-cards-wrapper {
+            padding: 24px 16px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
             max-width: 600px;
             width: 100%;
             margin: 0 auto;
         }
 
-        .input-select-wrapper {
-            background: var(--surface);
+        /* NEW: Show Selection Cards UI */
+        .show-card {
+            background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
             border: 2px solid var(--border-2);
             border-radius: var(--radius);
-            padding: 4px 12px;
+            padding: 22px 20px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.15s ease;
         }
 
-        .input-select-wrapper select {
-            width: 100%;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-2);
-            font-family: var(--font);
+        .show-card:hover {
+            border-color: var(--accent);
+        }
+
+        .show-card:active {
+            transform: scale(0.98);
+        }
+
+        .show-card-title {
             font-size: 16px;
-            font-weight: 500;
-            padding: 12px 0;
-            cursor: pointer;
-            -webkit-appearance: none;
+            font-weight: 600;
+            color: var(--text);
+            padding-right: 12px;
+            line-height: 1.4;
+        }
+
+        .show-card-action {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            flex-shrink: 0;
         }
 
         /* ==========================================
@@ -344,17 +364,15 @@
     <header class="portal-header">
         <div class="portal-logo-container"><img src="logo.png" alt="Logo"></div>
         <h1 class="portal-headline">Ticket Booking Portal</h1>
-        <p class="portal-sub-headline">Choose your show to see how your school is doing:</p>
+        <p class="portal-sub-headline" id="portalSubHeadline">Choose your show to see how your school is doing:</p>
     </header>
 
-    <main class="show-selector-container">
-        <div class="input-select-wrapper">
-            <select id="showSelector" onchange="handleShowChange()"></select>
-        </div>
-    </main>
+    <main class="landing-cards-wrapper" id="showSelectionContainer"></main>
 
-    <section class="leaderboard-section-title">School Support Leaderboard</section>
-    <section class="leaderboard-cards-wrapper" id="leaderboardContainer"></section>
+    <div id="leaderboardWrapper" style="display: none;">
+        <section class="leaderboard-section-title">School Support Leaderboard</section>
+        <section class="leaderboard-cards-wrapper" id="leaderboardContainer"></section>
+    </div>
 
     <script>
         const PORTAL_CONFIG = {
@@ -402,22 +420,39 @@
             }
         };
 
+        // Track global state of selected show cleanly
+        let activeShowId = null;
+
         window.addEventListener("DOMContentLoaded", () => {
             populateShows();
             simulateLoading("initial", null, () => {
-                renderCards();
+                // Keep leaderboard explicitly hidden on initial landing load
             });
         });
 
+        // Generates the selection landing card matrix
         function populateShows() {
-            const selector = document.getElementById("showSelector");
-            selector.innerHTML = PORTAL_CONFIG.showsDataManifest.map(show => 
-                `<option value="${show.id}">${show.name}</option>`
+            const container = document.getElementById("showSelectionContainer");
+            container.innerHTML = PORTAL_CONFIG.showsDataManifest.map(show => 
+                `<a href="javascript:void(0);" onclick="handleShowSelection('${show.id}')" class="show-card">
+                    <div class="show-card-title">${show.name}</div>
+                    <div class="show-card-action">Select Show →</div>
+                </a>`
             ).join('');
         }
 
-        function handleShowChange() {
+        // State Machine Switchboard Event Handler
+        function handleShowSelection(showId) {
+            activeShowId = showId;
+            const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === showId);
+            if (!showData) return;
+
             simulateLoading("showChange", null, () => {
+                // Swap Interface view containers
+                document.getElementById("showSelectionContainer").style.display = "none";
+                document.getElementById("portalSubHeadline").innerHTML = `Viewing results for: <strong style="color: var(--accent);">${showData.name}</strong>`;
+                document.getElementById("leaderboardWrapper").style.display = "block";
+                
                 renderCards();
             });
         }
@@ -452,6 +487,17 @@
                     clearInterval(timer);
                     bar.style.width = "100%";
                     pct.textContent = "100%";
+                    
+                    if (type === "initial") {
+                        hype.textContent = "MAPPING THEATER SEATING...";
+                        status.textContent = "Seating arrangements configured.";
+                    } else if (type === "showChange") {
+                        hype.textContent = "LOADING DANCE SCHOOLS...";
+                        status.textContent = "School data loaded.";
+                    } else {
+                        hype.textContent = "OPENING TICKET PORTAL...";
+                        status.textContent = "Secure checkout ready.";
+                    }
                     
                     if (type === "initial") {
                         hype.textContent = "MAPPING THEATER SEATING...";
@@ -506,7 +552,7 @@
         }
 
         function renderCards() {
-            const selectedShowId = document.getElementById("showSelector").value;
+            const selectedShowId = activeShowId;
             const showData = PORTAL_CONFIG.showsDataManifest.find(s => s.id === selectedShowId);
             const container = document.getElementById("leaderboardContainer");
 
