@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Shine on Stage - Ticket Booking Portal</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -176,7 +176,6 @@
             margin-bottom: 8px;
         }
 
-        /* 🔤 ONLY These Two Wizard Classes Use Arial 12pt */
         .portal-gold-header {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 12pt;
@@ -199,7 +198,6 @@
             display: block;
         }
 
-        /* Grid wrapper for show cards */
         .landing-cards-wrapper {
             padding: 24px 16px 40px;
             display: flex;
@@ -210,7 +208,6 @@
             margin: 0 auto;
         }
 
-        /* Show Selection Cards UI */
         .show-card {
             background: linear-gradient(135deg, var(--surface) 0%, var(--surface-2) 100%);
             border: 2px solid var(--border-2);
@@ -287,26 +284,23 @@
             flex: 1;
         }
 
-     .card-main-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.3;
-    
-    /* ✂️ Activates modern multi-line clamping */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    white-space: normal;
-}
+        .card-main-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            white-space: normal;
+        }
 
         .card-sub-label {
             font-size: 13px;
             color: var(--text-3);
         }
 
-        /* 📊 RIGHT ALIGNED METRIC BLOCK */
         .card-metric-right {
             display: flex;
             flex-direction: column;
@@ -385,64 +379,43 @@
     </div>
 
     <script>
-        /**
-         * =========================================================================
-         * 📝 PORTAL DATABASE DOCUMENTATION NOTE (WHERE DATA IS KEPT)
-         * =========================================================================
-         * All dynamic setup metrics live directly inside your Google Sheet.
-         * * SPREADSHEET TAB NAME REFERENCE:
-         * 1. 'Form Responses' -> Raw checkout logs directly from Jotform.
-         * 2. '🎟️ Ticket Sales' -> Matrix where Rows = School Names, Columns = Show Names.
-         * 3. '⚙️ Config'       -> Column A = School Names, Column B = Target Dancer Count.
-         * =========================================================================
-         */
         const PORTAL_CONFIG = {
-            // Target Jotform form destination link
             jotformBaseUrl: "https://form.jotform.com/261435880262357",
-            
-            // 🌐 YOUR LIVE DATABASE LINK GOES HERE:
             googleSheetApiUrl: "https://script.google.com/macros/s/AKfycbxob7KaAWNSF4tFcKaGDwiuR1BSH8zQTT49_wia27xTnWyNPHewhiAzcrlKwT5UwJwF/exec",
-            
-            // Baseline sales threshold required before turnout calculations turn on
-            minSalesThreshold: 10,
-
-            // Containers initialized blank; auto-populated from Google Sheet
+            minSalesThreshold: 1,
             showsDataManifest: [],
             dancersDemographicsRoster: {}
         };
 
         let activeShowId = null;
 
-        // Run data connection workflow immediately upon page load
         window.addEventListener("DOMContentLoaded", () => {
             if (PORTAL_CONFIG.googleSheetApiUrl === "PASTE_YOUR_APPS_SCRIPT_URL_HERE") {
                 console.error("Configuration incomplete: Please specify your Google Web App link.");
                 return;
             }
 
-         //  THE UPDATED, COMPATIBLE CODE:
-fetch(PORTAL_CONFIG.googleSheetApiUrl, {
-    method: "GET",
-    headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-    }
-})
-.then(response => {
-    if (!response.ok) throw new Error('Network response was not ok');
-    return response.json();
-})
-.then(liveFeedData => {
-    PORTAL_CONFIG.showsDataManifest = liveFeedData.shows;
-    PORTAL_CONFIG.dancersDemographicsRoster = liveFeedData.roster;
-    
-    populateShows();
-    simulateLoading("initial", null, () => {});
-})
-.catch(error => {
-    console.error("Database connection failure:", error);
-    // Alert the screen if it fails so it doesn't freeze silently
-    document.getElementById("lsStatus").textContent = "Connection Error. Please refresh.";
-});
+            fetch(PORTAL_CONFIG.googleSheetApiUrl, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(liveFeedData => {
+                PORTAL_CONFIG.showsDataManifest = liveFeedData.shows;
+                PORTAL_CONFIG.dancersDemographicsRoster = liveFeedData.roster;
+                
+                populateShows();
+                simulateLoading("initial", null, () => {});
+            })
+            .catch(error => {
+                console.error("Database connection failure:", error);
+                document.getElementById("lsStatus").textContent = "Connection Error. Please refresh.";
+            });
         });
 
         function populateShows() {
@@ -568,13 +541,11 @@ fetch(PORTAL_CONFIG.googleSheetApiUrl, {
                 let tierClass = "";
                 let iconClass = "";
                 let statusLabel = "";
-                let displayRatio = ratio.toFixed(1);
 
                 if (sold < PORTAL_CONFIG.minSalesThreshold) {
                     tierClass = "tier-pending";
                     iconClass = "icon-pending";
-                    statusLabel = "Pending Data";
-                    displayRatio = "—";
+                    statusLabel = "Ticket Sales Open";
                 } else if (ratio < 1.0) {
                     tierClass = "tier-critical";
                     iconClass = "icon-critical";
@@ -592,7 +563,7 @@ fetch(PORTAL_CONFIG.googleSheetApiUrl, {
                 return {
                     name: schoolName,
                     sold: sold,
-                    ratio: displayRatio,
+                    ratio: ratio, // Pass down raw number instead of a complex string split
                     tierClass: tierClass,
                     iconClass: iconClass,
                     statusText: statusLabel
@@ -604,23 +575,28 @@ fetch(PORTAL_CONFIG.googleSheetApiUrl, {
                 const targetSchoolParam = encodeURIComponent(item.name);
                 const queryDestinationUrl = `${PORTAL_CONFIG.jotformBaseUrl}?show=${targetShowParam}&school=${targetSchoolParam}`;
                 
-                const sublabelText = (item.statusText === "Pending Data") 
-                    ? `Not enough sales yet to accurately evaluate turnout`
-                    : `Click to begin buying tickets →`;
+                const sublabelText = (item.sold === 0) 
+                    ? `Be the first to secure tickets for this school! →`
+                    : `Click to buy tickets for this school →`;
+
+                // Calculate metric block structure safely without complex operations
+                const metricBoxHtml = (item.sold === 0) ? '' : `
+                    <div class="card-metric-right ${item.tierClass}">
+                        <div class="tier-status-wrapper">
+                            🎟️ <span class="turnout-status-icon ${item.iconClass}"></span>
+                            <div class="tier-title">${item.statusText}</div>
+                        </div>
+                        <div class="tier-value"><span>${item.ratio.toFixed(1)}</span> Seats / Dancer</div>
+                    </div>
+                `;
 
                 return `
                     <a href="javascript:void(0);" onclick="routeToBooking('${queryDestinationUrl}')" class="portal-card">
                         <div class="card-meta-left">
                             <div class="card-main-title">${item.name}</div>
-                            <div class="card-sub-label">${sublabelText}</div>
+                            <div class="card-sub-label" style="color: ${item.sold === 0 ? 'var(--accent)' : 'var(--text-3)'}; font-weight: ${item.sold === 0 ? '500' : '400'};">${sublabelText}</div>
                         </div>
-                        <div class="card-metric-right ${item.tierClass}">
-                            <div class="tier-status-wrapper">
-                                🎟️ <span class="turnout-status-icon ${item.iconClass}"></span>
-                                <div class="tier-title">${item.statusText}</div>
-                            </div>
-                            <div class="tier-value"><span>${item.ratio}</span> Seats / Dancer</div>
-                        </div>
+                        ${metricBoxHtml}
                     </a>
                 `;
             }).join('');
