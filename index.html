@@ -549,8 +549,9 @@
 
             container.innerHTML = cardsData.map(item => {  
                 const targetShowParam = encodeURIComponent(showData.name);  
-                const targetSchoolParam = encodeURIComponent(item.name);  
+                const targetSchoolParam = encodeURIComponent(item.name.trim());  
                 const queryDestinationUrl = `${PORTAL_CONFIG.jotformBaseUrl}?show=${targetShowParam}&school=${targetSchoolParam}`;  
+                 console.log(queryDestinationUrl);
                   
                 const sublabelText = (item.sold === 0)   
                     ? `Be the first to secure tickets! →`  
@@ -558,9 +559,9 @@
 
                 const accentStyle = (item.sold === 0) ? 'color: var(--accent); font-weight: 500;' : 'color: var(--text-3); font-weight: 400;';  
 
-                // Direct URL redirection assignment replaces missing simulateLoading layout hook
+                // Using getAttribute('data-url') protects the parameters from HTML attribute quote corruption
                 return `  
-                    <a href="javascript:void(0);" onclick="window.location.href='${queryDestinationUrl}'" class="portal-card">  
+                    <a href="javascript:void(0);" onclick="window.location.href=this.getAttribute('data-url')" data-url="${queryDestinationUrl}" class="portal-card">  
                         <div class="card-meta-left">  
                             <div class="card-main-title">${item.name}</div>  
                             <div class="card-sub-label" style="${accentStyle}">${sublabelText}</div>  
