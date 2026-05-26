@@ -185,7 +185,7 @@
             line-height: 1.4;
             letter-spacing: -0.01em;
             -webkit-font-smoothing: antialiased;
-            margin-bottom: 4px;
+            display: block;
         }
 
         .portal-white-subheader {
@@ -196,6 +196,7 @@
             line-height: 1.4;
             letter-spacing: -0.01em;
             -webkit-font-smoothing: antialiased;
+            display: block;
         }
 
         /* Grid wrapper for show cards */
@@ -446,8 +447,10 @@
             simulateLoading("showChange", null, () => {
                 document.getElementById("showSelectionContainer").style.display = "none";
                 
+                // 🛠️ LINE BREAK ADDED HERE TO SPACE OUT BOTH SEGMENTS ACCURATELY
                 document.getElementById("dynamicHeaderContainer").innerHTML = `
-                    <div class="portal-gold-header" style="margin-bottom: 2px;">Select the school you're coming to support...</div>
+                    <div class="portal-gold-header">Select the school you're coming to support...</div>
+                    <br>
                     <div class="portal-white-subheader">You're coming to: <b>${showData.name}</b></div>
                 `;
                 
@@ -496,8 +499,6 @@
 
                     if (completedCallback) completedCallback();
                     
-                    // 🚨 REDIRECT RUNNER: If final step, instantly pass control to Jotform. 
-                    // Never fade the screen or let them see the cards page again.
                     if (type === "jotformRedirect" && absoluteUrl) {
                         window.location.href = absoluteUrl;
                     } else {
